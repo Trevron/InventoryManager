@@ -93,7 +93,7 @@ public class FXMLInHouseController {
     
     @FXML
     public void saveButtonHandler(ActionEvent event) {
-        System.out.println("Save button pressed!!");
+        System.out.println("Save button pressed!");
     }
     
     
