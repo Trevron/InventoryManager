@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trevorsoftware1.View_Controller.FXMLMainScreenController">
+   <children>
+      <VBox layoutY="88.0" prefHeight="292.0" prefWidth="400.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="88.0">
+         <children>
+            <HBox prefHeight="45.0" prefWidth="300.0">
+               <children>
+                  <Label text="ID">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField prefHeight="25.0" prefWidth="165.0" promptText="Auto Gen - Disabled">
+                     <HBox.margin>
+                        <Insets left="74.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="45.0" prefWidth="400.0">
+               <children>
+                  <Label text="Name">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField prefHeight="25.0" prefWidth="166.0" promptText="Part Name">
+                     <HBox.margin>
+                        <Insets left="52.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="45.0" prefWidth="400.0">
+               <children>
+                  <Label text="Inv">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField prefHeight="25.0" prefWidth="165.0" promptText="Inventory ">
+                     <HBox.margin>
+                        <Insets left="70.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="45.0" prefWidth="400.0">
+               <children>
+                  <Label text="Price/Cost">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField prefHeight="25.0" prefWidth="169.0" promptText="Price/Cost">
+                     <HBox.margin>
+                        <Insets left="25.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="45.0" prefWidth="400.0">
+               <children>
+                  <Label text="Max">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField prefHeight="25.0" prefWidth="57.0" promptText="Max">
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Label text="Min">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField prefHeight="25.0" prefWidth="58.0" promptText="Min">
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="45.0" prefWidth="400.0">
+               <children>
+                  <Label text="Company Name">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField prefHeight="25.0" prefWidth="137.0" promptText="Comp Name">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets left="50.0" right="50.0" />
+         </padding>
+      </VBox>
+      <HBox layoutX="1.0" layoutY="8.0" prefHeight="57.0" prefWidth="400.0">
+         <children>
+            <Label text="Add Part">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="20.0" top="20.0" />
+               </HBox.margin>
+            </Label>
+            <RadioButton mnemonicParsing="false" text="In-House">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="40.0" top="20.0" />
+               </HBox.margin>
+               <toggleGroup>
+                  <ToggleGroup fx:id="inorout" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton mnemonicParsing="false" selected="true" text="Outsourced" toggleGroup="$inorout">
+               <HBox.margin>
+                  <Insets left="40.0" top="20.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </RadioButton>
+         </children>
+      </HBox>
+      <HBox layoutX="209.0" layoutY="386.0" prefHeight="100.0" prefWidth="193.0">
+         <children>
+            <Button mnemonicParsing="false" text="Save">
+               <HBox.margin>
+                  <Insets left="40.0" top="50.0" />
+               </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" text="Cancel">
+               <HBox.margin>
+                  <Insets left="30.0" top="50.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
