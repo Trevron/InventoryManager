@@ -11,6 +11,17 @@ public class Inhouse extends Part {
         // default constructor
     }
     
+    public Inhouse(int partID, String name, double price, int inStock, int min, int max, int machineID) {
+        super();
+        this.setPartID(partID);
+        this.setName(name);
+        this.setPrice(price);
+        this.setInStock(inStock);
+        this.setMin(min);
+        this.setMax(max);
+        this.setMachineID(machineID);
+    }
+    
     public void setMachineID(int x) {
         machineID.set(x);
     }

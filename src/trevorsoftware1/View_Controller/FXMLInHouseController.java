@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import trevorsoftware1.Model.Inhouse;
 
 /**
  *
@@ -94,6 +95,22 @@ public class FXMLInHouseController {
     @FXML
     public void saveButtonHandler(ActionEvent event) {
         System.out.println("Save button pressed!");
+        
+        // Take input from text fields, parsing if necessary, and assign them to variables
+        int partID = Integer.parseInt(idField.getText());
+        String name = nameField.getText();
+        double price = Double.parseDouble(priceField.getText());
+        int inStock = Integer.parseInt(invField.getText());
+        int min = Integer.parseInt(minField.getText());
+        int max = Integer.parseInt(maxField.getText());
+        int machineID = Integer.parseInt(machineIDField.getText());
+        
+        // Create new inhouse part
+        Inhouse item = new Inhouse(partID, name, price, inStock, min, max, machineID);
+        
+        // Add created part to inventory of parts
+        //inv.addPart(item);
+        
     }
     
     
