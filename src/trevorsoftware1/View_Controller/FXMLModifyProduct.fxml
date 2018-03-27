@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="trevorsoftware1.View_Controller.FXMLMainScreenController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trevorsoftware1.View_Controller.FXMLMainController">
    <children>
       <VBox layoutX="14.0" layoutY="66.0" prefHeight="416.0" prefWidth="273.0">
          <children>
@@ -38,7 +37,7 @@
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField promptText="ID">
+                  <TextField fx:id="modProductPartIDTextField" promptText="ID">
                      <HBox.margin>
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
@@ -55,7 +54,7 @@
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField promptText="Product Name">
+                  <TextField fx:id="modProductNameTextField" promptText="Product Name">
                      <HBox.margin>
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
@@ -72,7 +71,7 @@
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField promptText="Inv">
+                  <TextField fx:id="modProductInstockTextField" promptText="Inv">
                      <HBox.margin>
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
@@ -89,7 +88,7 @@
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField promptText="Price">
+                  <TextField fx:id="modProductPriceTextField" promptText="Price">
                      <HBox.margin>
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
@@ -106,7 +105,7 @@
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="46.0" promptText="Max">
+                  <TextField fx:id="modProductMaxTextField" prefHeight="25.0" prefWidth="46.0" promptText="Max">
                      <HBox.margin>
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
@@ -119,7 +118,7 @@
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="47.0" promptText="Min">
+                  <TextField fx:id="modProductMinTextField" prefHeight="25.0" prefWidth="47.0" promptText="Min">
                      <HBox.margin>
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
@@ -132,12 +131,12 @@
          <children>
             <HBox prefHeight="58.0" prefWidth="440.0">
                <children>
-                  <Button mnemonicParsing="false" text="Search">
+                  <Button fx:id="modProductSearchButton" mnemonicParsing="false" onAction="#modProductSearchButtonHandler" text="Search">
                      <HBox.margin>
                         <Insets left="150.0" top="20.0" />
                      </HBox.margin>
                   </Button>
-                  <TextField>
+                  <TextField fx:id="modProductSearchTextField">
                      <HBox.margin>
                         <Insets left="30.0" top="20.0" />
                      </HBox.margin>
@@ -146,12 +145,12 @@
             </HBox>
             <HBox prefHeight="133.0" prefWidth="440.0">
                <children>
-                  <TableView prefHeight="133.0" prefWidth="441.0">
+                  <TableView fx:id="modProductTable1" prefHeight="133.0" prefWidth="441.0">
                     <columns>
-                      <TableColumn prefWidth="100.0" text="Part ID" />
-                      <TableColumn prefWidth="118.0" text="Part Name" />
-                        <TableColumn prefWidth="99.0" text="Inventory" />
-                        <TableColumn prefWidth="123.0" text="Price per Unit" />
+                      <TableColumn fx:id="modProductPartIDCol1" prefWidth="100.0" text="Part ID" />
+                      <TableColumn fx:id="modProductPartNameCol1" prefWidth="118.0" text="Part Name" />
+                        <TableColumn fx:id="modProductPartInvCol1" prefWidth="99.0" text="Inventory" />
+                        <TableColumn fx:id="modProductPartPriceCol1" prefWidth="123.0" text="Price per Unit" />
                     </columns>
                   </TableView>
                </children>
@@ -161,7 +160,7 @@
             </HBox>
             <HBox prefHeight="55.0" prefWidth="440.0">
                <children>
-                  <Button mnemonicParsing="false" text="Add">
+                  <Button fx:id="modProductAddButton" mnemonicParsing="false" onAction="#modProductAddButtonHandler" text="Add">
                      <HBox.margin>
                         <Insets left="390.0" top="10.0" />
                      </HBox.margin>
@@ -170,12 +169,12 @@
             </HBox>
             <HBox prefHeight="133.0" prefWidth="440.0">
                <children>
-                  <TableView prefHeight="133.0" prefWidth="441.0">
+                  <TableView fx:id="modProductTable2" prefHeight="133.0" prefWidth="441.0">
                      <columns>
-                        <TableColumn prefWidth="100.0" text="Part ID" />
-                        <TableColumn prefWidth="118.0" text="Part Name" />
-                        <TableColumn prefWidth="99.0" text="Inventory" />
-                        <TableColumn prefWidth="123.0" text="Price per Unit" />
+                        <TableColumn fx:id="modProductPartIDCol2" prefWidth="100.0" text="Part ID" />
+                        <TableColumn fx:id="modProductPartNameCol2" prefWidth="118.0" text="Part Name" />
+                        <TableColumn fx:id="modProductPartInvCol2" prefWidth="99.0" text="Inventory" />
+                        <TableColumn fx:id="modProductPartPriceCol2" prefWidth="123.0" text="Price per Unit" />
                      </columns>
                   </TableView>
                </children>
@@ -185,7 +184,7 @@
             </HBox>
             <HBox prefHeight="55.0" prefWidth="440.0">
                <children>
-                  <Button mnemonicParsing="false" text="Delete">
+                  <Button fx:id="modProductDeleteButton" mnemonicParsing="false" onAction="#modProductDeleteButtonHandler" text="Delete">
                      <HBox.margin>
                         <Insets left="380.0" top="10.0" />
                      </HBox.margin>
@@ -194,12 +193,12 @@
             </HBox>
             <HBox prefHeight="55.0" prefWidth="440.0">
                <children>
-                  <Button mnemonicParsing="false" text="Save">
+                  <Button fx:id="modProductSaveButton" mnemonicParsing="false" onAction="#modProductSaveButtonHandler" text="Save">
                      <HBox.margin>
                         <Insets left="320.0" top="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" text="Cancel">
+                  <Button fx:id="modProductCancelButton" mnemonicParsing="false" onAction="#modProductCancelButtonHandler" text="Cancel">
                      <HBox.margin>
                         <Insets left="20.0" top="10.0" />
                      </HBox.margin>

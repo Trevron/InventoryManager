@@ -23,63 +23,97 @@ public class Inventory {
         allParts = new ArrayList<>();
     }
 
-    //  Add product    
+    //  Interact with products array list   
     private void addProduct(Product x) {
         products.add(x);
     }
 
     public boolean removeProduct(int x){
         boolean wasRemoved = false;
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).equals(x)){
-                products.remove(x);
+        for (Product product : products) {
+            if (product.getProductID() == x) {
+                System.out.println(product.getName() + " was removed.");
+                products.remove(product);
                 wasRemoved = true;
-            }
-        }
+                break;
+            } 
+        } 
         return wasRemoved;  
     }
 
     public Product lookupProduct(int x) {
-        Product product = null;
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).equals(x)) {
-                product = products.get(i);
+        for (Product product : products) {
+            if (product.getProductID() == x) {
+                System.out.println("The product with the ID " + x + " is called " + product.getName());
+                return product;
             }
         }
-        return product;
+        return null;
     }
     
     public void updateProduct(int x) {
-        //IDK
+        for (Product product: products) {
+            if (product.getProductID() == x) {
+                System.out.println("Product" + product.getName() + "updated.");
+            }
+        }
     }
     
+    // Interact with allParts arraylist
     public void addPart(Part x){
         allParts.add(x);
     }
     
     public boolean deletePart(int x) {
         boolean wasRemoved = false;
-        for (int i = 0; i < allParts.size(); i++) {
-            if (allParts.get(i).equals(x)) {
-                allParts.remove(x);
+        for (Part part : allParts) {
+            if (part.getPartID() == x) {
+                System.out.println(part.getName() + " was removed.");
+                allParts.remove(part);
                 wasRemoved = true;
-            }
-        }
+                break;
+            } 
+        } 
         return wasRemoved;
     }
     
-    public Part lookupPart(int x) {
-        Part part = null;
-        for(int i = 0; i < allParts.size(); i++) {
-            if (allParts.get(i).equals(x)) {
-                part = allParts.get(i);
+    
+    public int lookupPart(String name) {
+        for (int i = 0; i < allParts.size(); i++) {
+            if (allParts.get(i).getName().equals(name)) {
+                return i;
             }
-        }
-        return part;
+        } return -1;
     }
     
+    public Part lookupPart(int x) {
+        if (x >= 0) {           
+            System.out.println("Part: " + allParts.get(x).getName() + "found.");
+            return allParts.get(x);
+        } else {
+            System.out.println("Part not found.");
+            return null;
+        }
+    }
+/*    public Part lookupPart(int x) {
+        for (Part part : allParts) {
+            if (part.getPartID() == x) {
+                System.out.println("The name of the part with the ID " + x +" is " + part.getName());
+                return part;
+            } 
+        }
+        System.out.println("Part not found.");
+        return null;
+    }
+ */   
     public void updatePart(int x) {
-        //IDK
+        for (Part part : allParts) {
+            if (part.getPartID() == x) {
+                System.out.println("The name of the part with the ID " + x +" was updated");
+                
+            } 
+        } 
+        
     }
     
 } //end 

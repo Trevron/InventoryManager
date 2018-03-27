@@ -91,13 +91,13 @@ public class Product {
     }
     
     public Part lookupAssociatedPart(int x) {
-        Part part = null;
-        for (int i = 0; i < associatedParts.size(); i++) {
-            if (associatedParts.get(i).equals(x)) {
-                part = associatedParts.get(i);
-            }
-        }
-        return part;
+        for (Part part : associatedParts) {
+            if (part.getPartID() == x) {
+                System.out.println("The name of the part with the ID " + x +" is " + part.getName());
+                return part;
+            } 
+        } 
+        return null;
     }
     
     public void setProductID(int x) {

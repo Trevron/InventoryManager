@@ -10,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import trevorsoftware1.Model.Inventory;
 
 
 /**
@@ -36,7 +35,8 @@ public class TrevorSoftware1 extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-        Inventory inv = new Inventory();
+        
+        
     }
     
 }

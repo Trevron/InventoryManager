@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trevorsoftware1.View_Controller.FXMLMainScreenController">
+<AnchorPane id="AnchorPane" fx:id="osmod_partOutsourcedScreen" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trevorsoftware1.View_Controller.FXMLMainController">
    <children>
       <VBox layoutY="88.0" prefHeight="292.0" prefWidth="400.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="88.0">
          <children>
@@ -22,7 +22,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="165.0" promptText="ID">
+                  <TextField fx:id="osmod_partIDTextField" prefHeight="25.0" prefWidth="165.0" promptText="ID">
                      <HBox.margin>
                         <Insets left="74.0" />
                      </HBox.margin>
@@ -36,7 +36,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="166.0" promptText="Part Name">
+                  <TextField fx:id="osmod_nameTextField" prefHeight="25.0" prefWidth="166.0" promptText="Part Name">
                      <HBox.margin>
                         <Insets left="52.0" />
                      </HBox.margin>
@@ -50,7 +50,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="165.0" promptText="Inventory ">
+                  <TextField fx:id="osmod_instockTextField" prefHeight="25.0" prefWidth="165.0" promptText="Inventory ">
                      <HBox.margin>
                         <Insets left="70.0" />
                      </HBox.margin>
@@ -64,7 +64,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="169.0" promptText="Price/Cost">
+                  <TextField fx:id="osmod_priceTextField" prefHeight="25.0" prefWidth="169.0" promptText="Price/Cost">
                      <HBox.margin>
                         <Insets left="25.0" />
                      </HBox.margin>
@@ -78,7 +78,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="57.0" promptText="Max">
+                  <TextField fx:id="osmod_maxTextField" prefHeight="25.0" prefWidth="57.0" promptText="Max">
                      <HBox.margin>
                         <Insets left="30.0" />
                      </HBox.margin>
@@ -91,7 +91,7 @@
                         <Insets left="30.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="58.0" promptText="Min">
+                  <TextField fx:id="osmod_minTextField" prefHeight="25.0" prefWidth="58.0" promptText="Min">
                      <HBox.margin>
                         <Insets left="30.0" />
                      </HBox.margin>
@@ -105,7 +105,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="137.0" promptText="Comp Name">
+                  <TextField fx:id="osmod_companyNameTextField" prefHeight="25.0" prefWidth="137.0" promptText="Comp Name">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -130,7 +130,7 @@
                   <Insets left="20.0" top="20.0" />
                </HBox.margin>
             </Label>
-            <RadioButton mnemonicParsing="false" text="In-House">
+            <RadioButton fx:id="osmod_inhouseRadio" mnemonicParsing="false" text="In-House">
                <font>
                   <Font size="14.0" />
                </font>
@@ -138,10 +138,10 @@
                   <Insets left="40.0" top="20.0" />
                </HBox.margin>
                <toggleGroup>
-                  <ToggleGroup fx:id="inourout" />
+                  <ToggleGroup fx:id="inorout" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton mnemonicParsing="false" selected="true" text="Outsourced" toggleGroup="$inourout">
+            <RadioButton fx:id="osmod_outsourcedRadio" mnemonicParsing="false" selected="true" text="Outsourced" toggleGroup="$inorout">
                <HBox.margin>
                   <Insets left="40.0" top="20.0" />
                </HBox.margin>
@@ -153,12 +153,12 @@
       </HBox>
       <HBox layoutX="209.0" layoutY="386.0" prefHeight="100.0" prefWidth="193.0">
          <children>
-            <Button mnemonicParsing="false" text="Save">
+            <Button fx:id="osmod_saveButton" mnemonicParsing="false" onAction="#osmod_saveButtonHandler" text="Save">
                <HBox.margin>
                   <Insets left="40.0" top="50.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Cancel">
+            <Button fx:id="osmod_cancelButton" mnemonicParsing="false" onAction="#osmod_cancelButtonHandler" text="Cancel">
                <HBox.margin>
                   <Insets left="30.0" top="50.0" />
                </HBox.margin>

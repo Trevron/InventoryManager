@@ -17,10 +17,16 @@ public abstract class Part {
     private final IntegerProperty max = new SimpleIntegerProperty();
     
     public Part(){
-       // default constructor 
+        this(0, "default", 0.0, 0, 0, 100);
     }
-    
-    
+    public Part(int partID, String name, double price, int inStock, int min, int max) {
+        this.partID.set(partID);
+        this.name.set(name);
+        this.price.set(price);
+        this.inStock.set(inStock);
+        this.min.set(min);
+        this.max.set(max);
+    }
     public void setName(String x){
         name.set(x);
     }
