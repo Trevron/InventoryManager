@@ -160,7 +160,7 @@
             </HBox>
             <HBox prefHeight="55.0" prefWidth="440.0">
                <children>
-                  <Button fx:id="addProductAddButton" mnemonicParsing="false" text="Add">
+                  <Button fx:id="addProductAddButton" mnemonicParsing="false" onAction="#addProductAddButtonHandler" text="Add">
                      <HBox.margin>
                         <Insets left="390.0" top="10.0" />
                      </HBox.margin>

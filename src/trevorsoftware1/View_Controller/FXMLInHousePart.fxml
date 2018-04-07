@@ -100,12 +100,12 @@
             </HBox>
             <HBox prefHeight="45.0" prefWidth="400.0">
                <children>
-                  <Label text="Machine ID">
+                  <Label fx:id="inoroutLabel" text="Machine ID">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="machineIDField" prefHeight="25.0" prefWidth="165.0" promptText="Mach ID">
+                  <TextField fx:id="machineIDField" prefHeight="25.0" prefWidth="165.0" promptText="Machine ID">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -130,7 +130,7 @@
                   <Insets left="20.0" top="20.0" />
                </HBox.margin>
             </Label>
-            <RadioButton fx:id="inHouseRadio" mnemonicParsing="false" selected="true" text="In-House">
+            <RadioButton fx:id="inHouseRadio" mnemonicParsing="false" onAction="#inHouseRadioHandler" selected="true" text="In-House">
                <font>
                   <Font size="14.0" />
                </font>
@@ -141,7 +141,7 @@
                   <ToggleGroup fx:id="inorout" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="outsourcedRadio" mnemonicParsing="false" text="Outsourced" toggleGroup="$inorout">
+            <RadioButton fx:id="outsourcedRadio" mnemonicParsing="false" onAction="#outsourcedRadioHandler" text="Outsourced" toggleGroup="$inorout">
                <HBox.margin>
                   <Insets left="40.0" top="20.0" />
                </HBox.margin>

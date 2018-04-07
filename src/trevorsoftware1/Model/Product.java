@@ -19,6 +19,16 @@ public class Product {
     private final IntegerProperty max = new SimpleIntegerProperty();
     
     public Product() {
+        this(0, "default", 0.00, 0, 0, 0);
+    }
+    
+    public Product(int productID, String name, double price, int inStock, int min, int max) {
+        this.productID.set(productID);
+        this.name.set(name);
+        this.price.set(price);
+        this.inStock.set(inStock);
+        this.min.set(min);
+        this.max.set(max);
         associatedParts = new ArrayList<>();
     }
     
@@ -98,6 +108,10 @@ public class Product {
             } 
         } 
         return null;
+    }
+    
+    public ArrayList getAssociatedParts () {
+        return associatedParts;
     }
     
     public void setProductID(int x) {

@@ -7,7 +7,10 @@ package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +22,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -29,7 +34,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import trevorsoftware1.Model.Inhouse;
 import trevorsoftware1.Model.Inventory;
+import trevorsoftware1.Model.Outsourced;
 import trevorsoftware1.Model.Part;
+import trevorsoftware1.Model.Product;
 
 /**
  *
@@ -39,12 +46,13 @@ public class FXMLMainController implements Initializable {
     
     //Instantiate inventory
     public static Inventory inv = new Inventory();
-    Inhouse tool = new Inhouse(123, "Tool1", 30.00 , 20, 10, 0, 12345 );
-    Inhouse tool2 = new Inhouse(222, "Tool2", 10.00 , 20, 10, 0, 12346 );
     
-    
-    
-    
+    private ObservableList<Part> partList, associatedPartList;
+    ;
+
+    private Part modPart = null;
+    private Product currentProduct = null;
+ 
     
     // MAIN SCREEN CONTROLS! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @FXML
@@ -69,19 +77,19 @@ public class FXMLMainController implements Initializable {
     private TextField partSearchField;
 
     @FXML
-    private TableView<?> mainProductTable;
+    private TableView<Product> mainProductTable;
 
     @FXML
-    private TableColumn<?, ?> productIDColumn;
+    private TableColumn<Product, Integer> productIDColumn;
 
     @FXML
-    private TableColumn<?, ?> productNameColumn;
+    private TableColumn<Product, String> productNameColumn;
 
     @FXML
-    private TableColumn<?, ?> productInventoryColumn;
+    private TableColumn<Product, Integer> productInventoryColumn;
 
     @FXML
-    private TableColumn<?, ?> productPriceColumn;
+    private TableColumn<Product, Double> productPriceColumn;
 
     @FXML
     private TextField productSearchField;
@@ -100,7 +108,12 @@ public class FXMLMainController implements Initializable {
     @FXML
     void mainExitButton(ActionEvent event) {
         System.out.println("Exit button pressed!");
-        System.exit(0);
+        exitAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                System.out.println("Program terminated.");
+                System.exit(0);
+            }
+        });
     }
 
     @FXML
@@ -118,6 +131,9 @@ public class FXMLMainController implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+        
+        
+        
 
     }
 
@@ -130,18 +146,36 @@ public class FXMLMainController implements Initializable {
     @FXML
     void partModifyButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Modify part button pressed!");
+        modPart = mainPartTable.getSelectionModel().getSelectedItem();
         
-        Stage stage;
-        Parent root;
+        if (modPart != null) {
+            System.out.println(modPart.getName());
+            int partID = modPart.getPartID();
+            String name = modPart.getName();
+            
+            
+            
+            Stage stage;
+            Parent root;
 
-        //get reference to the button's stage
-        stage=(Stage) partModifyButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLInHouseModify.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+            //get reference to the button's stage
+            stage=(Stage) partModifyButton.getScene().getWindow();
+            //load up other FXML document
+            root = FXMLLoader.load(getClass().getResource("FXMLInHouseModify.fxml"));
+            
+            
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            
+            System.out.println(partID);
+            System.out.println("Editing part " + partID + " | " + name);
+            
+            
+            
+        } else {
+            System.out.println("No part selected.");
+        }
 
     }
     
@@ -150,25 +184,20 @@ public class FXMLMainController implements Initializable {
     void partSearchButton(ActionEvent event) {
         System.out.println("Part search button pressed!");
         
-        // Set up table cells
-        partIDColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
-        partNameColumn.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
-        partInvColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
-        partPriceColumn.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
-        
-        // create new observable arraylist
-        ObservableList<Part> parts = FXCollections.observableArrayList();
         // clear/initialize list
-        parts.clear();
+        this.partList.clear();
         
         // get partID from textfield and search, return part
-        int partID = Integer.parseInt(partSearchField.getText());
+        //int partID = Integer.parseInt(partSearchField.getText());
+        String partName = partSearchField.getText();
         System.out.println("searching for partID: " + partSearchField.getText());
-        Part part = inv.lookupPart(partID);
-        parts.add(part);
+        //Pass input using overloaded method.
+        ArrayList<Part> foundParts = inv.lookupPart(partName);
+        this.partList.addAll(foundParts);
         
         //add returned part to observable list
-        mainPartTable.setItems(parts);
+        mainPartTable.setItems(this.partList);
+        
     }
 
     @FXML
@@ -213,6 +242,29 @@ public class FXMLMainController implements Initializable {
     @FXML
     void productSearchButton(ActionEvent event) {
         System.out.println("Product search button pressed!");
+ /*       
+        // Set up table cells
+        productIDColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer>("productID"));
+        productNameColumn.setCellValueFactory(new PropertyValueFactory<Product, String>("name"));
+        productInventoryColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer>("inStock"));
+        productPriceColumn.setCellValueFactory(new PropertyValueFactory<Product, Double>("price"));
+        
+        // create new observable arraylist
+        ObservableList<Product> products = FXCollections.observableArrayList();
+        // clear/initialize list
+        products.clear();
+        
+        // get partID from textfield and search, return part
+        //int partID = Integer.parseInt(partSearchField.getText());
+        String productName = productSearchField.getText();
+        System.out.println("searching for partID: " + partSearchField.getText());
+        //Pass input using overloaded method.
+        Product product = inv.lookupProduct(productName);
+        products.add(product);
+        
+        //add returned part to observable list
+        mainProductTable.setItems(product);
+ */      
     }
     
     // Add Part InHouse Controls - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,6 +274,7 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     private TextField idField;
+    
 
     @FXML
     private TextField nameField;
@@ -256,32 +309,58 @@ public class FXMLMainController implements Initializable {
     @FXML
     private Button cancelButton;
     
+    @FXML
+    private Label inoroutLabel;
+    
     public void inHouseRadioHandler(ActionEvent event) {
-        
+        if (inHouseRadio.isSelected()) {
+            System.out.println("Inhouse part.");
+            inoroutLabel.setText("MachineID");
+            machineIDField.promptTextProperty().setValue("Machine ID");
+        } else if (outsourcedRadio.isSelected()) {
+            System.out.println("Outsourced part.");
+            inoroutLabel.setText("Company Name");
+            machineIDField.promptTextProperty().setValue("Company name");
+        }
     }
     
     public void outsourcedRadioHandler(ActionEvent event) {
-        
+        if (inHouseRadio.isSelected()) {
+            System.out.println("Inhouse part.");
+            inoroutLabel.setText("MachineID");
+            machineIDField.promptTextProperty().setValue("Machine ID");
+        } else if (outsourcedRadio.isSelected()) {
+            System.out.println("Outsourced part.");
+            inoroutLabel.setText("Company Name");
+            machineIDField.promptTextProperty().setValue("Company name");
+        }
     }
-
     
     @FXML
     void cancelButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Cancel button pressed!");
-        
-        
-        Stage stage;
-        Parent root;
-
-        //get reference to the button's stage
-        stage=(Stage) cancelButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
     
+        cancelAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    System.out.println("Add part cancelled.");
+                    
+                    Stage stage;
+                    Parent root;
+                    //get reference to the button's stage
+                    stage=(Stage) cancelButton.getScene().getWindow();
+                    //load up other FXML document
+                    root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException ex) {
+                    Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            
+            }
+        });
+        
     }
     
     
@@ -289,35 +368,52 @@ public class FXMLMainController implements Initializable {
     public void saveButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Save button pressed!");
         
-        int partID = 0;
+        int partID = inv.assignPartID(); // autogenerate partID
         String name = "";
         double price = 0;
         int inStock = 0;
         int min = 0;
         int max = 0;
         int machineID = 0;
+        String companyName = "default";
+        Part part = null;
         
-        // Take input from text fields, parsing if necessary, and assign them to variables
-        
-        try {
-        partID = Integer.parseInt(idField.getText());
-        name = nameField.getText();
-        price = Double.parseDouble(priceField.getText());
-        inStock = Integer.parseInt(invField.getText());
-        min = Integer.parseInt(minField.getText());
-        max = Integer.parseInt(maxField.getText());
-        machineID = Integer.parseInt(machineIDField.getText());
-        } catch (NumberFormatException e) {
-            System.err.println("NumberFormatException: " + e.getMessage());
-            numFormatExc.showAndWait();
+        // Check radio button then create correct part type
+        if (inHouseRadio.isSelected()) {
+            System.out.println("Inhouse part created.");
+            // Take input from text fields, parsing if necessary, and assign them to variables 
+            try {
+            name = nameField.getText();
+            price = Double.parseDouble(priceField.getText());
+            inStock = Integer.parseInt(invField.getText());
+            min = Integer.parseInt(minField.getText());
+            max = Integer.parseInt(maxField.getText());
+            machineID = Integer.parseInt(machineIDField.getText());
+            } catch (NumberFormatException e) {
+                System.err.println("NumberFormatException: " + e.getMessage());
+                numFormatExc.showAndWait();
+            }
+            // Create new inhouse part
+            part = new Inhouse(partID, name, price, inStock, min, max, machineID);    
+        } else if (outsourcedRadio.isSelected()) {
+            System.out.println("Outsourced part created.");
+            try {
+            name = nameField.getText();
+            price = Double.parseDouble(priceField.getText());
+            inStock = Integer.parseInt(invField.getText());
+            min = Integer.parseInt(minField.getText());
+            max = Integer.parseInt(maxField.getText());
+            companyName = machineIDField.getText();
+            } catch (NumberFormatException e) {
+                System.err.println("NumberFormatException: " + e.getMessage());
+                numFormatExc.showAndWait();
+            }
+            // Create new outsourced part
+            part = new Outsourced(partID, name, price, inStock, min, max, companyName);     
         }
         
-        
-        // Create new inhouse part
-        Inhouse item = new Inhouse(partID, name, price, inStock, min, max, machineID);
-       
         // Add created part to inventory of parts
-        inv.addPart(item);
+        inv.addPart(part);
         
         //Go back to main screen
         Stage stage;
@@ -331,8 +427,7 @@ public class FXMLMainController implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        
-        
+            
     }
     
     
@@ -375,13 +470,28 @@ public class FXMLMainController implements Initializable {
     private Button os_partCancelButton;
 
     @FXML
-    void os_partCancelButtonHandler(ActionEvent event) {
+    void os_partCancelButtonHandler(ActionEvent event) throws IOException {
 
+        System.out.println("Cancel button pressed!");
+        
+        
+        Stage stage;
+        Parent root;
+
+        //get reference to the button's stage
+        stage=(Stage) os_partCancelButton.getScene().getWindow();
+        //load up other FXML document
+        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+        
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
     void os_partSaveButtonHandler(ActionEvent event) {
 
+        System.out.println("Save button pressed!");
     }
     
     
@@ -425,13 +535,30 @@ public class FXMLMainController implements Initializable {
     private Button ihmod_partCancelButton;
 
     @FXML
-    void ihmod_partCancelButtonHandler(ActionEvent event) {
+    void ihmod_partCancelButtonHandler(ActionEvent event) throws IOException {
 
+        System.out.println("Cancel button pressed!");
+        
+        
+        Stage stage;
+        Parent root;
+
+        //get reference to the button's stage
+        stage=(Stage) ihmod_partCancelButton.getScene().getWindow();
+        //load up other FXML document
+        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+        
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+        
     }
 
     @FXML
     void ihmod_partSaveButtonHandler(ActionEvent event) {
-
+        System.out.println("Save button pressed!");
+        
+        
     }
     
     
@@ -474,13 +601,26 @@ public class FXMLMainController implements Initializable {
     private Button osmod_cancelButton;
 
     @FXML
-    void osmod_cancelButtonHandler(ActionEvent event) {
+    void osmod_cancelButtonHandler(ActionEvent event) throws IOException {
+        System.out.println("Cancel button pressed!");
+        
+        
+        Stage stage;
+        Parent root;
 
+        //get reference to the button's stage
+        stage=(Stage) osmod_cancelButton.getScene().getWindow();
+        //load up other FXML document
+        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+        
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
     void osmod_saveButtonHandler(ActionEvent event) {
-
+        System.out.println("Save button pressed!");
     }
     
     
@@ -514,37 +654,37 @@ public class FXMLMainController implements Initializable {
     private TextField addProductSearchTextField;
 
     @FXML
-    private TableView<?> addProductTable1;
+    private TableView<Part> addProductTable1;
 
     @FXML
-    private TableColumn<?, ?> addProductPartIDCol1;
+    private TableColumn<Part, Integer> addProductPartIDCol1;
 
     @FXML
-    private TableColumn<?, ?> addProductPartNameCol1;
+    private TableColumn<Part, String> addProductPartNameCol1;
 
     @FXML
-    private TableColumn<?, ?> addProductPartInvCol1;
+    private TableColumn<Part, Integer> addProductPartInvCol1;
 
     @FXML
-    private TableColumn<?, ?> addProductPartPriceCol1;
+    private TableColumn<Part, Double> addProductPartPriceCol1;
 
     @FXML
     private Button addProductAddButton;
 
     @FXML
-    private TableView<?> addProductTable2;
+    private TableView<Part> addProductTable2;
 
     @FXML
-    private TableColumn<?, ?> addProductPartIDCol2;
+    private TableColumn<Part, Integer> addProductPartIDCol2;
 
     @FXML
-    private TableColumn<?, ?> addProductPartNameCol2;
+    private TableColumn<Part, String> addProductPartNameCol2;
 
     @FXML
-    private TableColumn<?, ?> addProductPartInvCol2;
+    private TableColumn<Part, Integer> addProductPartInvCol2;
 
     @FXML
-    private TableColumn<?, ?> addProductPartPriceCol2;
+    private TableColumn<Part, Double> addProductPartPriceCol2;
 
     @FXML
     private Button addProductDeleteButton;
@@ -556,23 +696,55 @@ public class FXMLMainController implements Initializable {
     private Button addProductCancelButton;
 
     @FXML
-    void addProductCancelButtonHandler(ActionEvent event) {
+    void addProductCancelButtonHandler(ActionEvent event) throws IOException {
+        System.out.println("Cancel button pressed!");
+        
+        
+        Stage stage;
+        Parent root;
 
+        //get reference to the button's stage
+        stage=(Stage) addProductCancelButton.getScene().getWindow();
+        //load up other FXML document
+        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+        
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
+    void addProductAddButtonHandler(ActionEvent event) {
+        System.out.println("Add button pressed!");
+        Part part = addProductTable1.getSelectionModel().getSelectedItem();
+        
+    }
+    
+    @FXML
     void addProductDeleteButtonHandler(ActionEvent event) {
-
+        System.out.println("Delete button pressed!");
     }
 
     @FXML
     void addProductSaveButtonHandler(ActionEvent event) {
-
+        System.out.println("Save button pressed!");
     }
 
     @FXML
     void addProductSearchButtonHandler(ActionEvent event) {
-
+        System.out.println("Search button pressed!");
+        this.partList.clear();
+        
+        // get partID from textfield and search, return part
+        //int partID = Integer.parseInt(partSearchField.getText());
+        String partName = addProductSearchTextField.getText();
+        System.out.println("searching for partID: " + addProductSearchTextField.getText());
+        //Pass input using overloaded method.
+        ArrayList<Part> foundParts = inv.lookupPart(partName);
+        this.partList.addAll(foundParts);
+        
+        //add returned part to observable list
+        addProductTable1.setItems(this.partList);
     }
     
     // Modify product controller! - - - - -  - - - - - - - - - - - - - - - - - - - - - - -
@@ -649,56 +821,122 @@ public class FXMLMainController implements Initializable {
     }
 
     @FXML
-    void modProductCancelButtonHandler(ActionEvent event) {
+    void modProductCancelButtonHandler(ActionEvent event) throws IOException {
+        System.out.println("Cancel button pressed!");
+        
+        
+        Stage stage;
+        Parent root;
 
+        //get reference to the button's stage
+        stage=(Stage) modProductCancelButton.getScene().getWindow();
+        //load up other FXML document
+        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+        
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
     void modProductDeleteButtonHandler(ActionEvent event) {
-
+        System.out.println("Delete button pressed!");
     }
 
     @FXML
     void modProductSaveButtonHandler(ActionEvent event) {
-
+        System.out.println("Save button pressed!");
     }
 
     @FXML
     void modProductSearchButtonHandler(ActionEvent event) {
-
+        System.out.println("Search button pressed!");
     }
     
     
     
     
+     
     
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    //Alert dialogs
+    // Alert dialogs - - - - - - - - - - - - - - - - - - - - - - - - - -
     
     Alert numFormatExc = new Alert(AlertType.ERROR);
+    Alert cancelAlert = new Alert(AlertType.CONFIRMATION);
+    Alert saveAlert = new Alert(AlertType.CONFIRMATION);
+    Alert exitAlert = new Alert(AlertType.CONFIRMATION);
     
-   
     
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        inv.addPart(tool);
-        inv.addPart(tool2);
+        // main part table
+        if (this.mainPartTable != null) {
+            this.partList = FXCollections.observableArrayList();
+            this.partList.clear();
+            this.partList.addAll(inv.getAllParts());
+            this.mainPartTable.setItems(this.partList);
+            // Set up table cells
+            partIDColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+            partNameColumn.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+            partInvColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+            partPriceColumn.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+        }
+        
+        // main product table
+        // code here
+        
+        // add product part table 1
+        if (this.addProductTable1 != null) {
+            this.partList = FXCollections.observableArrayList();
+            this.partList.clear();
+            this.partList.addAll(inv.getAllParts());
+            this.addProductTable1.setItems(this.partList);
+            // Set up table cells
+            addProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+            addProductPartNameCol1.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+            addProductPartInvCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+            addProductPartPriceCol1.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+        }
+        
+        // add product associated parts table 2
+        if (this.addProductTable2 != null) {
+            this.associatedPartList = FXCollections.observableArrayList();
+            this.associatedPartList.clear();
+            //this.associatedPartList.addAll(inv.getProducts());
+            this.addProductTable2.setItems(this.associatedPartList);
+            // Set up table cells
+            addProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+            addProductPartNameCol2.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+            addProductPartInvCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+            addProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+        }
+      
+        
+
+        // Set up alerts
         numFormatExc.setTitle("ERROR");
         numFormatExc.setHeaderText("Number Format Exception");
         numFormatExc.setContentText("Sorry, there was an error.");
+        
+        cancelAlert.setTitle("Cancel");
+        cancelAlert.setHeaderText("Are you sure you want to continue?");
+        cancelAlert.setContentText("Changes will not be saved.");
+        
+        saveAlert.setTitle("Save");
+        saveAlert.setHeaderText("Are you sure you want to continue?");
+        saveAlert.setContentText("Changes will be saved.");
+        
+        exitAlert.setTitle("Close program");
+        exitAlert.setHeaderText("Are you sure you want to close this program?");
+        exitAlert.setContentText("Nothing will be saved.");
+        
+        // Disable ID field for autogenerate
+        if(this.idField != null) {
+            this.idField.setDisable(true);
+        }
         
     }
     

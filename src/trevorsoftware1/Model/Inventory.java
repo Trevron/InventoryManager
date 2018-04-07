@@ -16,6 +16,7 @@ public class Inventory {
     //  Initialize array lists
     private ArrayList<Product> products;
     private ArrayList<Part> allParts;
+    private int partIDCounter = 0;
 
     public Inventory(){
 
@@ -41,14 +42,22 @@ public class Inventory {
         return wasRemoved;  
     }
 
-    public Product lookupProduct(int x) {
-        for (Product product : products) {
-            if (product.getProductID() == x) {
-                System.out.println("The product with the ID " + x + " is called " + product.getName());
-                return product;
+    public int lookupProduct(String name) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getName().contains(name)) { //try contains/equals
+                return i;
             }
+        } return -1;
+    }
+    
+    public Product lookupProduct(int x) {
+        if (x >= 0) {           
+            System.out.println("Product: " + products.get(x).getName() + "found.");
+            return products.get(x);
+        } else {
+            System.out.println("Part not found.");
+            return null;
         }
-        return null;
     }
     
     public void updateProduct(int x) {
@@ -78,15 +87,18 @@ public class Inventory {
     }
     
     
-    public int lookupPart(String name) {
+    public ArrayList<Part> lookupPart(String name) {
+        ArrayList<Part> parts = new ArrayList();
         for (int i = 0; i < allParts.size(); i++) {
-            if (allParts.get(i).getName().equals(name)) {
-                return i;
+            System.out.println(allParts.get(i).getName());
+            if (allParts.get(i).getName().contains(name)) { //try contains/equals
+                parts.add(allParts.get(i));
             }
-        } return -1;
+        }
+        return parts;
     }
     
-    public Part lookupPart(int x) {
+    private Part lookupPart(int x) {
         if (x >= 0) {           
             System.out.println("Part: " + allParts.get(x).getName() + "found.");
             return allParts.get(x);
@@ -95,25 +107,31 @@ public class Inventory {
             return null;
         }
     }
-/*    public Part lookupPart(int x) {
-        for (Part part : allParts) {
-            if (part.getPartID() == x) {
-                System.out.println("The name of the part with the ID " + x +" is " + part.getName());
-                return part;
-            } 
-        }
-        System.out.println("Part not found.");
-        return null;
-    }
- */   
-    public void updatePart(int x) {
-        for (Part part : allParts) {
-            if (part.getPartID() == x) {
-                System.out.println("The name of the part with the ID " + x +" was updated");
-                
-            } 
-        } 
+ 
+    
+    public void updatePart(int lookupPart, int partID, String name, int inStock, int max, int min, double price) {
+        Part part = lookupPart(lookupPart);
+        part.setPartID(partID);
+        part.setName(name);
+        part.setInStock(inStock);
+        part.setMax(max);
+        part.setMin(min);
+        part.setPrice(price);
         
+    } 
+        
+    
+    public int assignPartID() {
+        this.partIDCounter++;
+        return partIDCounter;
+    }
+    
+    public ArrayList getAllParts() {
+        return allParts;
+    }
+    
+    public ArrayList getProducts() {
+        return products;
     }
     
 } //end 
