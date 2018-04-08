@@ -25,7 +25,8 @@ import javafx.stage.Stage;
 import trevorsoftware1.Model.Inhouse;
 import trevorsoftware1.Model.Outsourced;
 import trevorsoftware1.Model.Part;
-import static trevorsoftware1.View_Controller.FXMLMainController.inv;
+import trevorsoftware1.Model.State;
+
 
 
 /**
@@ -33,6 +34,8 @@ import static trevorsoftware1.View_Controller.FXMLMainController.inv;
  * @author TrevTop
  */
 public class AddPartController implements Initializable {
+    
+    private State state;
     
     // Add Part InHouse Controls - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
@@ -135,7 +138,7 @@ public class AddPartController implements Initializable {
     public void saveButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Save button pressed!");
         
-        int partID = inv.assignPartID(); // autogenerate partID
+        int partID = state.getInventory().assignPartID(); // autogenerate partID
         String name = "";
         double price = 0;
         int inStock = 0;
@@ -180,7 +183,7 @@ public class AddPartController implements Initializable {
         }
         
         // Add created part to inventory of parts
-        inv.addPart(part);
+        state.getInventory().addPart(part);
         
         //Go back to main screen
         Stage stage;
@@ -197,7 +200,11 @@ public class AddPartController implements Initializable {
             
     }
   
+    @Override
     public void initialize (URL url, ResourceBundle rb) {
+        
+        this.state = State.getInstance();
+
         // disable ID field for auto generation
         this.idField.setDisable(true);
         

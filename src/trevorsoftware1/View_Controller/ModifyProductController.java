@@ -6,9 +6,12 @@
 package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,12 +20,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import trevorsoftware1.Model.Part;
+import trevorsoftware1.Model.State;
 
 /**
  *
  * @author TrevTop
  */
-public class ModifyProductController {
+public class ModifyProductController implements Initializable {
+    
+    private State state;
 
     // Modify product controller! - - - - -  - - - - - - - - - - - - - - - - - - - - - - -
     
@@ -130,4 +136,8 @@ public class ModifyProductController {
         System.out.println("Search button pressed!");
     }
     
+    @Override
+    public void initialize (URL url, ResourceBundle rb) {
+        this.state = State.getInstance();
+    }
 }

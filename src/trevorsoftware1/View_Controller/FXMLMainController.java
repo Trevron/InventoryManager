@@ -25,9 +25,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import trevorsoftware1.Model.Inventory;
 import trevorsoftware1.Model.Part;
 import trevorsoftware1.Model.Product;
+import trevorsoftware1.Model.State;
 
 /**
  *
@@ -35,13 +35,9 @@ import trevorsoftware1.Model.Product;
  */
 public class FXMLMainController implements Initializable {
     
-    //Instantiate inventory
-    public static Inventory inv = new Inventory();
+    private State state;
     
-    private ObservableList<Part> partList, associatedPartList;
-    ;
-
-    private Part modPart = null;
+    private ObservableList<Part> partList;
     private Product currentProduct = null;
  
     
@@ -128,18 +124,24 @@ public class FXMLMainController implements Initializable {
     @FXML
     void partDeleteButton(ActionEvent event) {
         System.out.println("Delete part button pressed!");
-        
+        state.setSelectedPart(mainPartTable.getSelectionModel().getSelectedItem());
+        if (this.state.getSelectedPart() != null) {
+            System.out.println("Deleted part with ID: " + this.state.getSelectedPart().getPartID());
+            this.state.getInventory().deletePart(this.state.getSelectedPart().getPartID());
+            this.state.setSelectedPart(null);
+            this.partSearchButton(new ActionEvent());
+        }
     }
 
     @FXML
     void partModifyButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Modify part button pressed!");
-        modPart = mainPartTable.getSelectionModel().getSelectedItem();
+        state.setSelectedPart(mainPartTable.getSelectionModel().getSelectedItem());
         
-        if (modPart != null) {
-            System.out.println(modPart.getName());
-            int partID = modPart.getPartID();
-            String name = modPart.getName();
+        if (state.getSelectedPart() != null) {
+            System.out.println(state.getSelectedPart().getName());
+            int partID = state.getSelectedPart().getPartID();
+            String name = state.getSelectedPart().getName();
 
             Stage stage;
             Parent root;
@@ -175,7 +177,7 @@ public class FXMLMainController implements Initializable {
         String partName = partSearchField.getText();
         System.out.println("searching for partID: " + partSearchField.getText());
         //Pass input using overloaded method.
-        ArrayList<Part> foundParts = inv.lookupPart(partName);
+        ArrayList<Part> foundParts = state.getInventory().lookupPart(partName);
         this.partList.addAll(foundParts);
         
         //add returned part to observable list
@@ -255,11 +257,13 @@ public class FXMLMainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        this.state = State.getInstance();
+        
         // main part table
         if (this.mainPartTable != null) {
             this.partList = FXCollections.observableArrayList();
             this.partList.clear();
-            this.partList.addAll(inv.getAllParts());
+            this.partList.addAll(this.state.getInventory().getAllParts());
             this.mainPartTable.setItems(this.partList);
             // Set up table cells
             partIDColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));

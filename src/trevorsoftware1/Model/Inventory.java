@@ -73,10 +73,10 @@ public class Inventory {
         allParts.add(x);
     }
     
-    public boolean deletePart(int x) {
+    public boolean deletePart(int partID) {
         boolean wasRemoved = false;
         for (Part part : allParts) {
-            if (part.getPartID() == x) {
+            if (part.getPartID() == partID) {
                 System.out.println(part.getName() + " was removed.");
                 allParts.remove(part);
                 wasRemoved = true;
@@ -98,20 +98,18 @@ public class Inventory {
         return parts;
     }
     
-    private Part lookupPart(int x) {
-        if (x >= 0) {           
-            System.out.println("Part: " + allParts.get(x).getName() + "found.");
-            return allParts.get(x);
-        } else {
-            System.out.println("Part not found.");
-            return null;
+    private Part lookupPart(int partID) {
+        for (int i = 0; i < allParts.size(); i++) {
+            if (allParts.get(i).getPartID() == partID) {
+                return allParts.get(i);
+            }
         }
+        return null;
     }
  
     
-    public void updatePart(int lookupPart, int partID, String name, int inStock, int max, int min, double price) {
+    public void updatePart(int lookupPart, String name, int inStock, int max, int min, double price) {
         Part part = lookupPart(lookupPart);
-        part.setPartID(partID);
         part.setName(name);
         part.setInStock(inStock);
         part.setMax(max);

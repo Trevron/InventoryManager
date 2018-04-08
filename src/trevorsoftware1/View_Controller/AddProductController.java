@@ -7,12 +7,14 @@ package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,13 +25,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import trevorsoftware1.Model.Part;
-import static trevorsoftware1.View_Controller.FXMLMainController.inv;
+import trevorsoftware1.Model.State;
+
 
 /**
  *
  * @author TrevTop
  */
-public class AddProductController {
+public class AddProductController implements Initializable {
+    
+    private ObservableList<Part> partList, associatedPartList;
+    private State state;
+    
     // Add product controller! - - - - - - - - -  - - - - - - - - - - -  - - - - - - - - - - - 
     
     @FXML
@@ -156,20 +163,24 @@ public class AddProductController {
         */
     }
    
-    /*
+    @Override
     public void initialize (URL url, ResourceBundle rb) {
+        
+        this.state = State.getInstance();
+        
         // add product part table 1
-        if (this.addProductTable1 != null) {
+
             this.partList = FXCollections.observableArrayList();
             this.partList.clear();
-            this.partList.addAll(inv.getAllParts());
+            this.partList.addAll(state.getInventory().getAllParts());
+            System.out.println(Arrays.toString(state.getInventory().getAllParts().toArray()));
             this.addProductTable1.setItems(this.partList);
             // Set up table cells
             addProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
             addProductPartNameCol1.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
             addProductPartInvCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
             addProductPartPriceCol1.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
-        }
+  
         
         // add product associated parts table 2
         if (this.addProductTable2 != null) {
@@ -184,5 +195,5 @@ public class AddProductController {
             addProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
         }
     }
-    */
+    
 }

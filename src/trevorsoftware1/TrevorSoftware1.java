@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import trevorsoftware1.Model.State;
 
 
 /**
@@ -36,7 +37,14 @@ public class TrevorSoftware1 extends Application {
     public static void main(String[] args) {
         launch(args);
         
-        
+    }
+    
+    private static Class getClass(String classname) throws ClassNotFoundException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (classLoader == null) {
+            classLoader = State.class.getClassLoader();
+        }
+        return (classLoader.loadClass(classname));
     }
     
 }
