@@ -16,17 +16,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import trevorsoftware1.Model.Part;
 
 /**
  *
  * @author TrevTop
  */
 public class ModifyProductController {
-      
-    
-    
-    
-    
+
     // Modify product controller! - - - - -  - - - - - - - - - - - - - - - - - - - - - - -
     
     @FXML
@@ -54,37 +51,37 @@ public class ModifyProductController {
     private TextField modProductSearchTextField;
 
     @FXML
-    private TableView<?> modProductTable1;
+    private TableView<Part> modProductTable1;
 
     @FXML
-    private TableColumn<?, ?> modProductPartIDCol1;
+    private TableColumn<Part, Integer> modProductPartIDCol1;
 
     @FXML
-    private TableColumn<?, ?> modProductPartNameCol1;
+    private TableColumn<Part, String> modProductPartNameCol1;
 
     @FXML
-    private TableColumn<?, ?> modProductPartInvCol1;
+    private TableColumn<Part, Integer> modProductPartInvCol1;
 
     @FXML
-    private TableColumn<?, ?> modProductPartPriceCol1;
+    private TableColumn<Part, Double> modProductPartPriceCol1;
 
     @FXML
     private Button modProductAddButton;
 
     @FXML
-    private TableView<?> modProductTable2;
+    private TableView<Part> modProductTable2;
 
     @FXML
-    private TableColumn<?, ?> modProductPartIDCol2;
+    private TableColumn<Part, Integer> modProductPartIDCol2;
 
     @FXML
-    private TableColumn<?, ?> modProductPartNameCol2;
+    private TableColumn<Part, String> modProductPartNameCol2;
 
     @FXML
-    private TableColumn<?, ?> modProductPartInvCol2;
+    private TableColumn<Part, Integer> modProductPartInvCol2;
 
     @FXML
-    private TableColumn<?, ?> modProductPartPriceCol2;
+    private TableColumn<Part, Double> modProductPartPriceCol2;
 
     @FXML
     private Button modProductDeleteButton;

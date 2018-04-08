@@ -6,7 +6,10 @@
 package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import trevorsoftware1.Model.Part;
@@ -135,6 +139,7 @@ public class AddProductController {
     @FXML
     void addProductSearchButtonHandler(ActionEvent event) {
         System.out.println("Search button pressed!");
+        /*
         this.partList.clear();
         
         // get partID from textfield and search, return part
@@ -147,6 +152,37 @@ public class AddProductController {
         
         //add returned part to observable list
         addProductTable1.setItems(this.partList);
+        
+        */
     }
-    
+   
+    /*
+    public void initialize (URL url, ResourceBundle rb) {
+        // add product part table 1
+        if (this.addProductTable1 != null) {
+            this.partList = FXCollections.observableArrayList();
+            this.partList.clear();
+            this.partList.addAll(inv.getAllParts());
+            this.addProductTable1.setItems(this.partList);
+            // Set up table cells
+            addProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+            addProductPartNameCol1.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+            addProductPartInvCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+            addProductPartPriceCol1.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+        }
+        
+        // add product associated parts table 2
+        if (this.addProductTable2 != null) {
+            this.associatedPartList = FXCollections.observableArrayList();
+            this.associatedPartList.clear();
+            //this.associatedPartList.addAll(inv.getProducts());
+            this.addProductTable2.setItems(this.associatedPartList);
+            // Set up table cells
+            addProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+            addProductPartNameCol2.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+            addProductPartInvCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+            addProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+        }
+    }
+    */
 }

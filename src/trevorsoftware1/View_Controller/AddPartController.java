@@ -5,11 +5,9 @@
  */
 package trevorsoftware1.View_Controller;
 
-import com.sun.javafx.logging.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +26,7 @@ import trevorsoftware1.Model.Inhouse;
 import trevorsoftware1.Model.Outsourced;
 import trevorsoftware1.Model.Part;
 import static trevorsoftware1.View_Controller.FXMLMainController.inv;
+
 
 /**
  *
@@ -108,7 +107,7 @@ public class AddPartController implements Initializable {
     void cancelButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Cancel button pressed!");
     
-        cancelAlert.showAndWait().ifPresent(response -> {
+        Alerts.getAlert("cancel").showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
                     System.out.println("Add part cancelled.");
@@ -123,7 +122,7 @@ public class AddPartController implements Initializable {
                     stage.setScene(scene);
                     stage.show();
                 } catch (IOException ex) {
-                    Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("IOException! Error!");
                 }
             
             }
@@ -159,7 +158,7 @@ public class AddPartController implements Initializable {
             machineID = Integer.parseInt(machineIDField.getText());
             } catch (NumberFormatException e) {
                 System.err.println("NumberFormatException: " + e.getMessage());
-                numFormatExc.showAndWait();
+                Alerts.getAlert("numFormatExc").showAndWait();
             }
             // Create new inhouse part
             part = new Inhouse(partID, name, price, inStock, min, max, machineID);    
@@ -174,7 +173,7 @@ public class AddPartController implements Initializable {
             companyName = machineIDField.getText();
             } catch (NumberFormatException e) {
                 System.err.println("NumberFormatException: " + e.getMessage());
-                numFormatExc.showAndWait();
+                Alerts.getAlert("numFormatExc").showAndWait();
             }
             // Create new outsourced part
             part = new Outsourced(partID, name, price, inStock, min, max, companyName);     
@@ -201,6 +200,8 @@ public class AddPartController implements Initializable {
     public void initialize (URL url, ResourceBundle rb) {
         // disable ID field for auto generation
         this.idField.setDisable(true);
+        
+        
     }
     
     

@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,22 +17,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import trevorsoftware1.Model.Inhouse;
 import trevorsoftware1.Model.Inventory;
-import trevorsoftware1.Model.Outsourced;
 import trevorsoftware1.Model.Part;
 import trevorsoftware1.Model.Product;
 
@@ -108,7 +99,7 @@ public class FXMLMainController implements Initializable {
     @FXML
     void mainExitButton(ActionEvent event) {
         System.out.println("Exit button pressed!");
-        exitAlert.showAndWait().ifPresent(response -> {
+        Alerts.getAlert("exitAlert").showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 System.out.println("Program terminated.");
                 System.exit(0);
@@ -131,9 +122,6 @@ public class FXMLMainController implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        
-        
-        
 
     }
 
@@ -152,9 +140,7 @@ public class FXMLMainController implements Initializable {
             System.out.println(modPart.getName());
             int partID = modPart.getPartID();
             String name = modPart.getName();
-            
-            
-            
+
             Stage stage;
             Parent root;
 
@@ -162,17 +148,14 @@ public class FXMLMainController implements Initializable {
             stage=(Stage) partModifyButton.getScene().getWindow();
             //load up other FXML document
             root = FXMLLoader.load(getClass().getResource("FXMLInHouseModify.fxml"));
-            
-            
+
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
             
             System.out.println(partID);
             System.out.println("Editing part " + partID + " | " + name);
-            
-            
-            
+   
         } else {
             System.out.println("No part selected.");
         }
@@ -267,22 +250,7 @@ public class FXMLMainController implements Initializable {
  */      
     }
     
-  
-    
-    
-    
-     
-    
-    
-    
-    
-    // Alert dialogs - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
-    Alert numFormatExc = new Alert(AlertType.ERROR);
-    Alert cancelAlert = new Alert(AlertType.CONFIRMATION);
-    Alert saveAlert = new Alert(AlertType.CONFIRMATION);
-    Alert exitAlert = new Alert(AlertType.CONFIRMATION);
-    
+
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -298,59 +266,6 @@ public class FXMLMainController implements Initializable {
             partNameColumn.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
             partInvColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
             partPriceColumn.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
-        }
-        
-        // main product table
-        // code here
-        
-        // add product part table 1
-        if (this.addProductTable1 != null) {
-            this.partList = FXCollections.observableArrayList();
-            this.partList.clear();
-            this.partList.addAll(inv.getAllParts());
-            this.addProductTable1.setItems(this.partList);
-            // Set up table cells
-            addProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
-            addProductPartNameCol1.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
-            addProductPartInvCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
-            addProductPartPriceCol1.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
-        }
-        
-        // add product associated parts table 2
-        if (this.addProductTable2 != null) {
-            this.associatedPartList = FXCollections.observableArrayList();
-            this.associatedPartList.clear();
-            //this.associatedPartList.addAll(inv.getProducts());
-            this.addProductTable2.setItems(this.associatedPartList);
-            // Set up table cells
-            addProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
-            addProductPartNameCol2.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
-            addProductPartInvCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
-            addProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
-        }
-      
-        
-
-        // Set up alerts
-        numFormatExc.setTitle("ERROR");
-        numFormatExc.setHeaderText("Number Format Exception");
-        numFormatExc.setContentText("Sorry, there was an error.");
-        
-        cancelAlert.setTitle("Cancel");
-        cancelAlert.setHeaderText("Are you sure you want to continue?");
-        cancelAlert.setContentText("Changes will not be saved.");
-        
-        saveAlert.setTitle("Save");
-        saveAlert.setHeaderText("Are you sure you want to continue?");
-        saveAlert.setContentText("Changes will be saved.");
-        
-        exitAlert.setTitle("Close program");
-        exitAlert.setHeaderText("Are you sure you want to close this program?");
-        exitAlert.setContentText("Nothing will be saved.");
-        
-        // Disable ID field for autogenerate
-        if(this.idField != null) {
-            this.idField.setDisable(true);
         }
         
     }
