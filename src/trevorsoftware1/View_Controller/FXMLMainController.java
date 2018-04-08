@@ -99,7 +99,7 @@ public class FXMLMainController implements Initializable {
     @FXML
     void mainExitButton(ActionEvent event) {
         System.out.println("Exit button pressed!");
-        Alerts.getAlert("exitAlert").showAndWait().ifPresent(response -> {
+        Alerts.getAlert("exit").showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 System.out.println("Program terminated.");
                 System.exit(0);
