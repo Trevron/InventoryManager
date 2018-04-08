@@ -100,7 +100,7 @@
             </HBox>
             <HBox prefHeight="45.0" prefWidth="400.0">
                <children>
-                  <Label text="Machine ID">
+                  <Label fx:id="inoroutLabel" text="Machine ID">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -130,7 +130,7 @@
                   <Insets left="20.0" top="20.0" />
                </HBox.margin>
             </Label>
-            <RadioButton fx:id="ihmod_inhouseRadio" mnemonicParsing="false" selected="true" text="In-House">
+            <RadioButton fx:id="ihmod_inhouseRadio" mnemonicParsing="false" onAction="#ihmod_radioHandler" selected="true" text="In-House">
                <font>
                   <Font size="14.0" />
                </font>
@@ -141,7 +141,7 @@
                   <ToggleGroup fx:id="inorout" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="ihmod_outsourcedRadio" mnemonicParsing="false" text="Outsourced" toggleGroup="$inorout">
+            <RadioButton fx:id="ihmod_outsourcedRadio" mnemonicParsing="false" onAction="#ihmod_radioHandler" text="Outsourced" toggleGroup="$inorout">
                <HBox.margin>
                   <Insets left="40.0" top="20.0" />
                </HBox.margin>

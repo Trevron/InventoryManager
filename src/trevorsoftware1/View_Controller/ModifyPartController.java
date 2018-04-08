@@ -15,8 +15,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import trevorsoftware1.Model.Inhouse;
@@ -72,7 +74,26 @@ public class ModifyPartController implements Initializable {
 
     @FXML
     private Button ihmod_partCancelButton;
+    
+    @FXML
+    private Label inoroutLabel;
 
+    @FXML
+    private ToggleGroup inorout;
+    
+    public void ihmod_radioHandler (ActionEvent event) {
+        if (ihmod_inhouseRadio.isSelected()) {
+            System.out.println("Inhouse part.");
+            inoroutLabel.setText("MachineID");
+            ihmod_partMachineIDTextField.promptTextProperty().setValue("Machine ID");
+        } else if (ihmod_outsourcedRadio.isSelected()) {
+            System.out.println("Outsourced part.");
+            inoroutLabel.setText("Company Name");
+            ihmod_partMachineIDTextField.promptTextProperty().setValue("Company name");
+        }
+    }
+    
+    
     @FXML
     void ihmod_partCancelButtonHandler(ActionEvent event) throws IOException {
 
@@ -119,7 +140,7 @@ public class ModifyPartController implements Initializable {
             if (ihmod_inhouseRadio.isSelected()) {
                 machineID = Integer.parseInt(ihmod_partMachineIDTextField.getText());
             } else if (ihmod_outsourcedRadio.isSelected()) {
-                companyName = ihmod_partCompanyNameTextField.getText();
+                companyName = ihmod_partMachineIDTextField.getText();
             }
         } catch (NumberFormatException e) {
             System.err.println("NumberFormatException: " + e.getMessage());
@@ -173,6 +194,10 @@ public class ModifyPartController implements Initializable {
             ihmod_partMaxTextField.setText(Integer.toString(state.getSelectedPart().getMax()));
             if (state.getSelectedPart() instanceof Inhouse) {  
                 ihmod_partMachineIDTextField.setText(Integer.toString(((Inhouse)state.getSelectedPart()).getMachineID()));
+            }
+            if (state.getSelectedPart() instanceof Outsourced) {  
+                ihmod_outsourcedRadio.selectedProperty().set(true);
+                ihmod_partMachineIDTextField.setText(((Outsourced)state.getSelectedPart()).getCompanyName());
             }
         }
     }
