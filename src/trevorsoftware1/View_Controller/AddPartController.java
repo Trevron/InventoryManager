@@ -146,58 +146,74 @@ public class AddPartController implements Initializable {
         int max = 0;
         int machineID = 0;
         String companyName = "default";
+        boolean inhouse = true;
         Part part = null;
+        boolean isValid = false;
         
         // Check radio button then create correct part type
-        if (inHouseRadio.isSelected()) {
-            System.out.println("Inhouse part created.");
+        
             // Take input from text fields, parsing if necessary, and assign them to variables 
-            try {
+        try {
             name = nameField.getText();
             price = Double.parseDouble(priceField.getText());
             inStock = Integer.parseInt(invField.getText());
             min = Integer.parseInt(minField.getText());
             max = Integer.parseInt(maxField.getText());
-            machineID = Integer.parseInt(machineIDField.getText());
-            } catch (NumberFormatException e) {
-                System.err.println("NumberFormatException: " + e.getMessage());
-                Alerts.getAlert("numFormatExc").showAndWait();
+            if (inHouseRadio.isSelected()) {
+                inhouse = true;
+                  
+                machineID = Integer.parseInt(machineIDField.getText());
+            } else if (outsourcedRadio.isSelected()) {
+                inhouse = false;
+                
+                companyName = machineIDField.getText();
             }
+        } catch (NumberFormatException e) {
+            System.err.println("NumberFormatException: " + e.getMessage());
+            Alerts.getAlert("numFormatExc").showAndWait();
+        }
             // Create new inhouse part
-            part = new Inhouse(partID, name, price, inStock, min, max, machineID);    
-        } else if (outsourcedRadio.isSelected()) {
-            System.out.println("Outsourced part created.");
-            try {
-            name = nameField.getText();
-            price = Double.parseDouble(priceField.getText());
-            inStock = Integer.parseInt(invField.getText());
-            min = Integer.parseInt(minField.getText());
-            max = Integer.parseInt(maxField.getText());
-            companyName = machineIDField.getText();
-            } catch (NumberFormatException e) {
-                System.err.println("NumberFormatException: " + e.getMessage());
-                Alerts.getAlert("numFormatExc").showAndWait();
-            }
+                
+         
             // Create new outsourced part
-            part = new Outsourced(partID, name, price, inStock, min, max, companyName);     
+            
+        if (min > max) {
+            System.out.println("Min cannot be greater than max");
+        } else if (min < 0) {
+            System.out.println("Min must be at least 0");
+        } else if (inStock < min) {
+            System.out.println("Inv cannot be less than min");
+        } else if (inStock > max) {
+            System.out.println("Inv cannot be greater than max");
+        } else if (inhouse == false) {
+            part = new Outsourced(partID, name, price, inStock, min, max, companyName);
+            isValid = true;
+            System.out.println("Outsourced part created.");
+        } else if (inhouse == true) {
+            part = new Inhouse(partID, name, price, inStock, min, max, machineID);
+            isValid = true;
+            System.out.println("Inhouse part created.");  
+        } else {
+            System.out.println("There was a problem with part creation.");
         }
         
         // Add created part to inventory of parts
-        state.getInventory().addPart(part);
-        
-        //Go back to main screen
-        Stage stage;
-        Parent root;
+        if (isValid) {
+            state.getInventory().addPart(part);
 
-        //get reference to the button's stage
-        stage=(Stage) cancelButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-            
+            //Go back to main screen
+            Stage stage;
+            Parent root;
+
+            //get reference to the button's stage
+            stage=(Stage) cancelButton.getScene().getWindow();
+            //load up other FXML document
+            root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }    
     }
   
     @Override

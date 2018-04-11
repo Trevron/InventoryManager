@@ -7,6 +7,7 @@ package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -146,7 +147,7 @@ public class AddProductController implements Initializable {
     @FXML
     void addProductSearchButtonHandler(ActionEvent event) {
         System.out.println("Search button pressed!");
-        /*
+        
         this.partList.clear();
         
         // get partID from textfield and search, return part
@@ -154,13 +155,13 @@ public class AddProductController implements Initializable {
         String partName = addProductSearchTextField.getText();
         System.out.println("searching for partID: " + addProductSearchTextField.getText());
         //Pass input using overloaded method.
-        ArrayList<Part> foundParts = inv.lookupPart(partName);
+        ArrayList<Part> foundParts = this.state.getInventory().lookupPart(partName);
         this.partList.addAll(foundParts);
         
         //add returned part to observable list
         addProductTable1.setItems(this.partList);
         
-        */
+        
     }
    
     @Override

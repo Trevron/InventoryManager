@@ -153,12 +153,19 @@ public class ModifyPartController implements Initializable {
         this.state.getSelectedPart().setInStock(inStock);
         this.state.getSelectedPart().setMin(min);
         this.state.getSelectedPart().setMax(max);
-        if (ihmod_inhouseRadio.isSelected()) {
+        if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
             System.out.println("Inhouse part modified.");
             ((Inhouse)this.state.getSelectedPart()).setMachineID(machineID);
-        } else if (ihmod_outsourcedRadio.isSelected()) {
+        } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
             System.out.println("Outsourced part modified.");
             ((Outsourced)this.state.getSelectedPart()).setCompanyName(companyName);
+        } else if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
+            System.out.println("Outsourced part changed to inhouse.");
+            Part oldPart = this.state.getSelectedPart();
+            this.state.setSelectedPart(new Inhouse(partID, name, price, inStock, min, max, machineID));
+            // create update part method in inventory to replace one part with another.
+        } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
+            System.out.println("Inhouse part changed to outsourced.");
         }
    
         this.state.setSelectedPart(null);
@@ -198,7 +205,7 @@ public class ModifyPartController implements Initializable {
             if (state.getSelectedPart() instanceof Outsourced) {  
                 ihmod_outsourcedRadio.selectedProperty().set(true);
                 ihmod_partMachineIDTextField.setText(((Outsourced)state.getSelectedPart()).getCompanyName());
-            }
+            } 
         }
     }
     
