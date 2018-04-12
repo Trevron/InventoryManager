@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -99,17 +100,26 @@ public class ModifyPartController implements Initializable {
 
         System.out.println("Cancel button pressed!");
 
-        Stage stage;
-        Parent root;
-
-        //get reference to the button's stage
-        stage=(Stage) ihmod_partCancelButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Alerts.getAlert("cancel").showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    System.out.println("Add part cancelled.");
+                    
+                    Stage stage;
+                    Parent root;
+                    //get reference to the button's stage
+                    stage=(Stage) ihmod_partCancelButton.getScene().getWindow();
+                    //load up other FXML document
+                    root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException ex) {
+                    System.out.println("IOException! Error!");
+                }
+            
+            }
+        });
         
     }
 
@@ -162,10 +172,17 @@ public class ModifyPartController implements Initializable {
         } else if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
             System.out.println("Outsourced part changed to inhouse.");
             Part oldPart = this.state.getSelectedPart();
+            // set selected part to new Inhouse part created from text fields
             this.state.setSelectedPart(new Inhouse(partID, name, price, inStock, min, max, machineID));
-            // create update part method in inventory to replace one part with another.
+            // update inventory by swapping old part and new part
+            this.state.getInventory().updatePart(oldPart, this.state.getSelectedPart());
         } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
             System.out.println("Inhouse part changed to outsourced.");
+            Part oldPart = this.state.getSelectedPart();
+            // set selected part to new Outsourced part created from text fields
+            this.state.setSelectedPart(new Outsourced(partID, name, price, inStock, min, max, companyName));
+            // update inventory by swapping old part and new part
+            this.state.getInventory().updatePart(oldPart, this.state.getSelectedPart());
         }
    
         this.state.setSelectedPart(null);

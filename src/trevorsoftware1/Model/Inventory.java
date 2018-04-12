@@ -16,7 +16,7 @@ public class Inventory {
     //  Initialize array lists
     private ArrayList<Product> products;
     private ArrayList<Part> allParts;
-    private int partIDCounter = 0;
+
 
     public Inventory(){
 
@@ -107,21 +107,35 @@ public class Inventory {
         return null;
     }
  
-    
+/*  This update part is no longer utilized
     public void updatePart(int lookupPart, String name, int inStock, int max, int min, double price) {
         Part part = lookupPart(lookupPart);
         part.setName(name);
         part.setInStock(inStock);
         part.setMax(max);
         part.setMin(min);
-        part.setPrice(price);
-        
-    } 
+        part.setPrice(price);  
+    }
+*/
+    
+    public void updatePart(Part oldPart, Part newPart) {
+        for (int i = 0; i < allParts.size(); i++) {
+            if (allParts.get(i).equals(oldPart)) {
+                allParts.set(i, newPart);
+                System.out.println("Part updated.");
+            } else {
+                System.out.println("Part not found. Could not replace.");
+            }
+        }
+    }
         
     
     public int assignPartID() {
-        this.partIDCounter++;
-        return partIDCounter;
+        System.out.println(allParts.size());
+        if (allParts.isEmpty()) {
+            return 1;
+        } 
+        return allParts.get(allParts.size() - 1).getPartID() + 1;
     }
     
     public ArrayList getAllParts() {

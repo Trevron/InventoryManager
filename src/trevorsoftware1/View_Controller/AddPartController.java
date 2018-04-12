@@ -179,12 +179,16 @@ public class AddPartController implements Initializable {
             
         if (min > max) {
             System.out.println("Min cannot be greater than max");
+            Alerts.getAlert("minOverMax").showAndWait();
         } else if (min < 0) {
             System.out.println("Min must be at least 0");
+            Alerts.getAlert("minUnderZero").showAndWait();
         } else if (inStock < min) {
             System.out.println("Inv cannot be less than min");
+            Alerts.getAlert("invUnderMin").showAndWait();
         } else if (inStock > max) {
             System.out.println("Inv cannot be greater than max");
+            Alerts.getAlert("invOverMax").showAndWait();
         } else if (inhouse == false) {
             part = new Outsourced(partID, name, price, inStock, min, max, companyName);
             isValid = true;
