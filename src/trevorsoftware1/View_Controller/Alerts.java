@@ -6,6 +6,7 @@
 package trevorsoftware1.View_Controller;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 /**
  *
@@ -20,6 +21,8 @@ public class Alerts {
     private static final Alert minUnderZero = new Alert(Alert.AlertType.ERROR);
     private static final Alert invUnderMin = new Alert(Alert.AlertType.ERROR);
     private static final Alert invOverMax = new Alert(Alert.AlertType.ERROR);
+    private static final Alert deleteAlert = new Alert(Alert.AlertType.CONFIRMATION);
+    private static final Alert nullSelect = new Alert(Alert.AlertType.ERROR);
    
     public static Alert getAlert(String alertType) {
         switch(alertType) {
@@ -29,17 +32,17 @@ public class Alerts {
                 numFormatExc.setContentText("Sorry, there was an error.");
                 return numFormatExc;
             case "cancel":
-                cancelAlert.setTitle("Cancel");
+                cancelAlert.setTitle("Cancel?");
                 cancelAlert.setHeaderText("Are you sure you want to continue?");
                 cancelAlert.setContentText("Changes will not be saved.");
                 return cancelAlert;
             case "save":
-                saveAlert.setTitle("Save");
+                saveAlert.setTitle("Save?");
                 saveAlert.setHeaderText("Are you sure you want to continue?");
                 saveAlert.setContentText("Changes will be saved.");
                 return saveAlert;
             case "exit":
-                exitAlert.setTitle("Close program");
+                exitAlert.setTitle("Close program?");
                 exitAlert.setHeaderText("Are you sure you want to close this program?");
                 exitAlert.setContentText("Nothing will be saved.");
                 return exitAlert;
@@ -63,6 +66,16 @@ public class Alerts {
                 invOverMax.setHeaderText("Inventory cannot be more than max.");
                 invOverMax.setContentText("Please check your numbers and try again.");
                 return invOverMax;
+            case "delete":
+                deleteAlert.setTitle("Delete?");
+                deleteAlert.setHeaderText("Are you sure you want to delete?");
+                deleteAlert.setContentText("This cannot be undone.");
+                return deleteAlert;
+            case "nullSelect":
+                nullSelect.setTitle("Null Selection");
+                nullSelect.setHeaderText("You have not selected anything.");
+                nullSelect.setContentText("Highlight something and try again.");
+                return nullSelect;
             default:
                 return null;
         }

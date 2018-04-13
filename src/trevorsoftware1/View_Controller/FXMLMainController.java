@@ -126,10 +126,15 @@ public class FXMLMainController implements Initializable {
         System.out.println("Delete part button pressed!");
         state.setSelectedPart(mainPartTable.getSelectionModel().getSelectedItem());
         if (this.state.getSelectedPart() != null) {
-            System.out.println("Deleted part with ID: " + this.state.getSelectedPart().getPartID());
-            this.state.getInventory().deletePart(this.state.getSelectedPart().getPartID());
-            this.state.setSelectedPart(null);
-            this.partSearchButton(new ActionEvent());
+            Alerts.getAlert("delete").showAndWait();
+            if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {   
+                System.out.println("Deleted part with ID: " + this.state.getSelectedPart().getPartID());
+                this.state.getInventory().deletePart(this.state.getSelectedPart().getPartID());
+                this.state.setSelectedPart(null);
+                this.partSearchButton(new ActionEvent());
+            }
+        } else {
+            Alerts.getAlert("nullSelect").showAndWait();
         }
     }
 
@@ -160,6 +165,7 @@ public class FXMLMainController implements Initializable {
    
         } else {
             System.out.println("No part selected.");
+            Alerts.getAlert("nullSelect").showAndWait();
         }
 
     }

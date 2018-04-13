@@ -136,6 +136,8 @@ public class ModifyPartController implements Initializable {
         int machineID = 0;
         String companyName = "default";
         Part part = null;
+        boolean isValid = false;
+        boolean numFormat = false;
         
         // Check radio button then create correct part type
         
@@ -155,51 +157,70 @@ public class ModifyPartController implements Initializable {
         } catch (NumberFormatException e) {
             System.err.println("NumberFormatException: " + e.getMessage());
             Alerts.getAlert("numFormatExc").showAndWait();
+            numFormat = true;
         }
 
-        this.state.getSelectedPart().setPartID(partID);
-        this.state.getSelectedPart().setName(name);
-        this.state.getSelectedPart().setPrice(price);
-        this.state.getSelectedPart().setInStock(inStock);
-        this.state.getSelectedPart().setMin(min);
-        this.state.getSelectedPart().setMax(max);
-        if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
-            System.out.println("Inhouse part modified.");
-            ((Inhouse)this.state.getSelectedPart()).setMachineID(machineID);
-        } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
-            System.out.println("Outsourced part modified.");
-            ((Outsourced)this.state.getSelectedPart()).setCompanyName(companyName);
-        } else if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
-            System.out.println("Outsourced part changed to inhouse.");
-            Part oldPart = this.state.getSelectedPart();
-            // set selected part to new Inhouse part created from text fields
-            this.state.setSelectedPart(new Inhouse(partID, name, price, inStock, min, max, machineID));
-            // update inventory by swapping old part and new part
-            this.state.getInventory().updatePart(oldPart, this.state.getSelectedPart());
-        } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
-            System.out.println("Inhouse part changed to outsourced.");
-            Part oldPart = this.state.getSelectedPart();
-            // set selected part to new Outsourced part created from text fields
-            this.state.setSelectedPart(new Outsourced(partID, name, price, inStock, min, max, companyName));
-            // update inventory by swapping old part and new part
-            this.state.getInventory().updatePart(oldPart, this.state.getSelectedPart());
+        
+        if (min > max) {
+            System.out.println("Min cannot be greater than max");
+            Alerts.getAlert("minOverMax").showAndWait();
+        } else if (min < 0) {
+            System.out.println("Min must be at least 0");
+            Alerts.getAlert("minUnderZero").showAndWait();
+        } else if (inStock < min) {
+            System.out.println("Inv cannot be less than min");
+            Alerts.getAlert("invUnderMin").showAndWait();
+        } else if (inStock > max) {
+            System.out.println("Inv cannot be greater than max");
+            Alerts.getAlert("invOverMax").showAndWait();  
+        } else if (numFormat == false) {
+            isValid = true;
         }
-   
-        this.state.setSelectedPart(null);
         
-        //Go back to main screen
-        Stage stage;
-        Parent root;
+        if (isValid) {
+            this.state.getSelectedPart().setPartID(partID);
+            this.state.getSelectedPart().setName(name);
+            this.state.getSelectedPart().setPrice(price);
+            this.state.getSelectedPart().setInStock(inStock);
+            this.state.getSelectedPart().setMin(min);
+            this.state.getSelectedPart().setMax(max);
+            if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
+                System.out.println("Inhouse part modified.");
+                ((Inhouse)this.state.getSelectedPart()).setMachineID(machineID);
+            } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
+                System.out.println("Outsourced part modified.");
+                ((Outsourced)this.state.getSelectedPart()).setCompanyName(companyName);
+            } else if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
+                System.out.println("Outsourced part changed to inhouse.");
+                Part oldPart = this.state.getSelectedPart();
+                // set selected part to new Inhouse part created from text fields
+                this.state.setSelectedPart(new Inhouse(partID, name, price, inStock, min, max, machineID));
+                // update inventory by swapping old part and new part
+                this.state.getInventory().updatePart(oldPart, this.state.getSelectedPart());
+            } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
+                System.out.println("Inhouse part changed to outsourced.");
+                Part oldPart = this.state.getSelectedPart();
+                // set selected part to new Outsourced part created from text fields
+                this.state.setSelectedPart(new Outsourced(partID, name, price, inStock, min, max, companyName));
+                // update inventory by swapping old part and new part
+                this.state.getInventory().updatePart(oldPart, this.state.getSelectedPart());
+            }
 
-        //get reference to the button's stage
-        stage=(Stage) ihmod_partSaveButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-        
+            this.state.setSelectedPart(null);
+
+            //Go back to main screen
+            Stage stage;
+            Parent root;
+
+            //get reference to the button's stage
+            stage=(Stage) ihmod_partSaveButton.getScene().getWindow();
+            //load up other FXML document
+            root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
     }
     
     @Override
