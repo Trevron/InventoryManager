@@ -25,7 +25,7 @@ public class Inventory {
     }
 
     //  Interact with products array list   
-    private void addProduct(Product x) {
+    public void addProduct(Product x) {
         products.add(x);
     }
 

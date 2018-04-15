@@ -14,6 +14,7 @@ public class State {
 
     private Inventory inventory;
     private Part selectedPart, modifiedPart;
+    private Product selectedProduct, modifiedProduct, newProduct;
     
     private State() {
        inventory = new Inventory();
@@ -43,4 +44,11 @@ public class State {
         this.modifiedPart = modifiedPart;
     }
     
+    public Product getSelectedProduct() {
+        return selectedProduct;
+    }
+    
+    public void setSelectedProduct(Product selectedProduct) {
+        this.selectedProduct = selectedProduct;
+    }
 }

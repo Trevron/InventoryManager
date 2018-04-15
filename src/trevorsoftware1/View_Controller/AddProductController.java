@@ -26,6 +26,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import trevorsoftware1.Model.Part;
+import trevorsoftware1.Model.Product;
 import trevorsoftware1.Model.State;
 
 
@@ -36,6 +37,7 @@ import trevorsoftware1.Model.State;
 public class AddProductController implements Initializable {
     
     private ObservableList<Part> partList, associatedPartList;
+    private ArrayList<Part> associatedParts = new ArrayList();
     private State state;
     
     // Add product controller! - - - - - - - - -  - - - - - - - - - - -  - - - - - - - - - - - 
@@ -130,7 +132,15 @@ public class AddProductController implements Initializable {
     @FXML
     void addProductAddButtonHandler(ActionEvent event) {
         System.out.println("Add button pressed!");
-        Part part = addProductTable1.getSelectionModel().getSelectedItem();
+        this.state.setSelectedPart(addProductTable1.getSelectionModel().getSelectedItem());
+        if(this.state.getSelectedPart() != null) {
+            associatedParts.add(this.state.getSelectedPart());
+            this.state.setSelectedPart(null);
+            this.associatedPartList.clear();
+            this.associatedPartList.addAll(associatedParts);
+        } else {
+            System.out.println("No part selected");
+        }
         
     }
     
@@ -140,8 +150,36 @@ public class AddProductController implements Initializable {
     }
 
     @FXML
-    void addProductSaveButtonHandler(ActionEvent event) {
+    void addProductSaveButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Save button pressed!");
+        int productID = 0;
+        String name = "default";
+        double price = 0.0;
+        int inStock = 0;
+        int min = 0;
+        int max = 0;
+        
+        productID = Integer.parseInt(addProductIDTextField.getText());
+        name = addProductNameTextField.getText();
+        price = Double.parseDouble(addProductPriceTextField.getText());
+        inStock = Integer.parseInt(addProductInstockTextField.getText());
+        min = Integer.parseInt(addProductMinTextField.getText());
+        max = Integer.parseInt(addProductMaxTextField.getText());
+        Product product = new Product(productID, name, price, inStock, min, max, associatedParts);
+        
+        this.state.getInventory().addProduct(product);
+        
+        Stage stage;
+        Parent root;
+
+        //get reference to the button's stage
+        stage=(Stage) addProductCancelButton.getScene().getWindow();
+        //load up other FXML document
+        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+        
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -150,11 +188,8 @@ public class AddProductController implements Initializable {
         
         this.partList.clear();
         
-        // get partID from textfield and search, return part
-        //int partID = Integer.parseInt(partSearchField.getText());
         String partName = addProductSearchTextField.getText();
         System.out.println("searching for partID: " + addProductSearchTextField.getText());
-        //Pass input using overloaded method.
         ArrayList<Part> foundParts = this.state.getInventory().lookupPart(partName);
         this.partList.addAll(foundParts);
         
@@ -184,17 +219,17 @@ public class AddProductController implements Initializable {
   
         
         // add product associated parts table 2
-        if (this.addProductTable2 != null) {
             this.associatedPartList = FXCollections.observableArrayList();
             this.associatedPartList.clear();
-            //this.associatedPartList.addAll(inv.getProducts());
+            this.associatedPartList.addAll(associatedParts);
+            System.out.println(Arrays.toString(associatedParts.toArray()));
+            
             this.addProductTable2.setItems(this.associatedPartList);
             // Set up table cells
             addProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
             addProductPartNameCol2.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
             addProductPartInvCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
             addProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
-        }
     }
     
 }

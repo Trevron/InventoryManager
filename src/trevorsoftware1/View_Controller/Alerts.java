@@ -27,9 +27,9 @@ public class Alerts {
     public static Alert getAlert(String alertType) {
         switch(alertType) {
             case "numFormatExc":
-                numFormatExc.setTitle("ERROR");
-                numFormatExc.setHeaderText("Number Format Exception");
-                numFormatExc.setContentText("Sorry, there was an error.");
+                numFormatExc.setTitle("NumberFormatException");
+                numFormatExc.setHeaderText("Please check your inputs.");
+                numFormatExc.setContentText("A non numerical character is trying to be passed as an integer");
                 return numFormatExc;
             case "cancel":
                 cancelAlert.setTitle("Cancel?");

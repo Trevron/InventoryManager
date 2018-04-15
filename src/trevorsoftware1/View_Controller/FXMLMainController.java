@@ -38,7 +38,7 @@ public class FXMLMainController implements Initializable {
     private State state;
     
     private ObservableList<Part> partList;
-    private Product currentProduct = null;
+    private ObservableList<Product> productList;
  
     
     // MAIN SCREEN CONTROLS! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,29 +233,8 @@ public class FXMLMainController implements Initializable {
     @FXML
     void productSearchButton(ActionEvent event) {
         System.out.println("Product search button pressed!");
- /*       
-        // Set up table cells
-        productIDColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer>("productID"));
-        productNameColumn.setCellValueFactory(new PropertyValueFactory<Product, String>("name"));
-        productInventoryColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer>("inStock"));
-        productPriceColumn.setCellValueFactory(new PropertyValueFactory<Product, Double>("price"));
-        
-        // create new observable arraylist
-        ObservableList<Product> products = FXCollections.observableArrayList();
-        // clear/initialize list
-        products.clear();
-        
-        // get partID from textfield and search, return part
-        //int partID = Integer.parseInt(partSearchField.getText());
-        String productName = productSearchField.getText();
-        System.out.println("searching for partID: " + partSearchField.getText());
-        //Pass input using overloaded method.
-        Product product = inv.lookupProduct(productName);
-        products.add(product);
-        
-        //add returned part to observable list
-        mainProductTable.setItems(product);
- */      
+
+      
     }
     
 
@@ -266,18 +245,27 @@ public class FXMLMainController implements Initializable {
         this.state = State.getInstance();
         
         // main part table
-        if (this.mainPartTable != null) {
-            this.partList = FXCollections.observableArrayList();
-            this.partList.clear();
-            this.partList.addAll(this.state.getInventory().getAllParts());
-            this.mainPartTable.setItems(this.partList);
-            // Set up table cells
-            partIDColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
-            partNameColumn.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
-            partInvColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
-            partPriceColumn.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
-        }
-        
+        this.partList = FXCollections.observableArrayList();
+        this.partList.clear();
+        this.partList.addAll(this.state.getInventory().getAllParts());
+        this.mainPartTable.setItems(this.partList);
+        // Set up table cells
+        partIDColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+        partNameColumn.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+        partInvColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+        partPriceColumn.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+
+
+        // main product table
+        this.productList = FXCollections.observableArrayList();
+        this.productList.clear();
+        this.productList.addAll(this.state.getInventory().getProducts());
+        this.mainProductTable.setItems(this.productList);
+        // set up table cells
+        productIDColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer>("productID"));
+        productNameColumn.setCellValueFactory(new PropertyValueFactory<Product, String>("name"));
+        productInventoryColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer>("inStock"));
+        productPriceColumn.setCellValueFactory(new PropertyValueFactory<Product, Double>("price"));
     }
     
     
