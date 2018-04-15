@@ -13,8 +13,8 @@ public class State {
     private static final State state = new State();
 
     private Inventory inventory;
-    private Part selectedPart, modifiedPart;
-    private Product selectedProduct, modifiedProduct, newProduct;
+    private Part selectedPart;
+    private Product selectedProduct;
     
     private State() {
        inventory = new Inventory();
@@ -36,13 +36,6 @@ public class State {
         this.selectedPart = selectedPart;
     }
     
-    public Part getModifiedPart() {
-        return modifiedPart;
-    }
-    
-    public void setModifiedPart(Part modifiedPart) {
-        this.modifiedPart = modifiedPart;
-    }
     
     public Product getSelectedProduct() {
         return selectedProduct;
