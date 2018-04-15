@@ -181,7 +181,7 @@ public class FXMLMainController implements Initializable {
         // get partID from textfield and search, return part
         //int partID = Integer.parseInt(partSearchField.getText());
         String partName = partSearchField.getText();
-        System.out.println("searching for partID: " + partSearchField.getText());
+        System.out.println("searching for part: " + partSearchField.getText());
         //Pass input using overloaded method.
         ArrayList<Part> foundParts = state.getInventory().lookupPart(partName);
         this.partList.addAll(foundParts);
@@ -233,7 +233,18 @@ public class FXMLMainController implements Initializable {
     @FXML
     void productSearchButton(ActionEvent event) {
         System.out.println("Product search button pressed!");
-
+        
+        // clear/initialize list
+        this.productList.clear();
+        
+        String productName = productSearchField.getText();
+        System.out.println("searching for product: " + productSearchField.getText());
+        //Pass input using overloaded method.
+        ArrayList<Product> foundProducts = state.getInventory().lookupProduct(productName);
+        this.productList.addAll(foundProducts);
+        
+        //add returned part to observable list
+        mainProductTable.setItems(this.productList);
       
     }
     

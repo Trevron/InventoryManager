@@ -19,7 +19,6 @@ public class Inventory {
 
 
     public Inventory(){
-
         products = new ArrayList<>();
         allParts = new ArrayList<>();
     }
@@ -42,22 +41,24 @@ public class Inventory {
         return wasRemoved;  
     }
 
-    public int lookupProduct(String name) {
+    public ArrayList<Product> lookupProduct(String name) {
+        ArrayList<Product> productList = new ArrayList();
         for (int i = 0; i < products.size(); i++) {
+            System.out.println(products.get(i).getName());
             if (products.get(i).getName().contains(name)) { //try contains/equals
-                return i;
+                productList.add(products.get(i));
             }
-        } return -1;
+        }
+        return productList;
     }
     
-    public Product lookupProduct(int x) {
-        if (x >= 0) {           
-            System.out.println("Product: " + products.get(x).getName() + "found.");
-            return products.get(x);
-        } else {
-            System.out.println("Part not found.");
-            return null;
+    private Product lookupProduct(int productID) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getProductID() == productID) {
+                return products.get(i);
+            }
         }
+        return null;
     }
     
     public void updateProduct(int x) {
