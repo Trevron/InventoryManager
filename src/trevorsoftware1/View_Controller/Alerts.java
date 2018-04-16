@@ -23,6 +23,8 @@ public class Alerts {
     private static final Alert invOverMax = new Alert(Alert.AlertType.ERROR);
     private static final Alert deleteAlert = new Alert(Alert.AlertType.CONFIRMATION);
     private static final Alert nullSelect = new Alert(Alert.AlertType.ERROR);
+    private static final Alert noParts = new Alert(Alert.AlertType.ERROR);
+    private static final Alert lowPrice = new Alert(Alert.AlertType.ERROR);
    
     public static Alert getAlert(String alertType) {
         switch(alertType) {
@@ -76,6 +78,16 @@ public class Alerts {
                 nullSelect.setHeaderText("You have not selected anything.");
                 nullSelect.setContentText("Highlight something and try again.");
                 return nullSelect;
+            case "noParts":
+                noParts.setTitle("No associated parts!");
+                noParts.setHeaderText("There are no parts associated with this product.");
+                noParts.setContentText("New products must contain at least one part.");
+                return noParts;
+            case "lowPrice":
+                lowPrice.setTitle("Price too low!");
+                lowPrice.setHeaderText("Please adjust price of product.");
+                lowPrice.setContentText("Products cannot cost less than the price of the associated parts.");
+                return lowPrice;
             default:
                 return null;
         }

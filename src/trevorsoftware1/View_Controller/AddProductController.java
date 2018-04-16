@@ -158,28 +158,64 @@ public class AddProductController implements Initializable {
         int inStock = 0;
         int min = 0;
         int max = 0;
+        boolean isValid = false;
+        boolean numFormat = false;
         
-        productID = Integer.parseInt(addProductIDTextField.getText());
-        name = addProductNameTextField.getText();
-        price = Double.parseDouble(addProductPriceTextField.getText());
-        inStock = Integer.parseInt(addProductInstockTextField.getText());
-        min = Integer.parseInt(addProductMinTextField.getText());
-        max = Integer.parseInt(addProductMaxTextField.getText());
-        Product product = new Product(productID, name, price, inStock, min, max, associatedParts);
+        try {
+            productID = Integer.parseInt(addProductIDTextField.getText());
+            name = addProductNameTextField.getText();
+            price = Double.parseDouble(addProductPriceTextField.getText());
+            inStock = Integer.parseInt(addProductInstockTextField.getText());
+            min = Integer.parseInt(addProductMinTextField.getText());
+            max = Integer.parseInt(addProductMaxTextField.getText());
+        } catch (NumberFormatException e) {
+            System.err.println("NumberFormatException: " + e.getMessage());
+            Alerts.getAlert("numFormatExc").showAndWait();
+            numFormat = true;
+        }
         
-        this.state.getInventory().addProduct(product);
+        if (min > max) {
+            System.out.println("Min cannot be greater than max");
+            Alerts.getAlert("minOverMax").showAndWait();
+        } else if (min < 0) {
+            System.out.println("Min must be at least 0");
+            Alerts.getAlert("minUnderZero").showAndWait();
+        } else if (inStock < min) {
+            System.out.println("Inv cannot be less than min");
+            Alerts.getAlert("invUnderMin").showAndWait();
+        } else if (inStock > max) {
+            System.out.println("Inv cannot be greater than max");
+            Alerts.getAlert("invOverMax").showAndWait();
+        } else if (associatedParts.isEmpty()) {
+            System.out.println("Associated part list is empty.");
+            Alerts.getAlert("noParts").showAndWait();
+        } else if (numFormat == true) {
+            System.out.println("There was a problem with part creation.");
+        } else if (price < checkPrice()) {
+            System.out.println("Price cannot be less than total cost of associated parts.");
+            Alerts.getAlert("lowPrice").showAndWait();
+        } else {
+            System.out.println("Validation succesful");
+            isValid = true;
+        }
         
-        Stage stage;
-        Parent root;
+        if (isValid) {
+            Product product = new Product(productID, name, price, inStock, min, max, associatedParts);
 
-        //get reference to the button's stage
-        stage=(Stage) addProductCancelButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+            this.state.getInventory().addProduct(product);
+
+            Stage stage;
+            Parent root;
+
+            //get reference to the button's stage
+            stage=(Stage) addProductCancelButton.getScene().getWindow();
+            //load up other FXML document
+            root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     @FXML
@@ -197,6 +233,17 @@ public class AddProductController implements Initializable {
         addProductTable1.setItems(this.partList);
         
         
+    }
+    
+    // check price of associated parts
+    private double checkPrice() {
+        double price = 0;
+        if (!associatedParts.isEmpty()) {
+            for (int i = 0; i < associatedParts.size(); i++) {
+                price += associatedParts.get(i).getPrice();
+            }
+        }
+        return price;
     }
    
     @Override
