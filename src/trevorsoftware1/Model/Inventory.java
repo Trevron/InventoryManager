@@ -132,11 +132,17 @@ public class Inventory {
         
     
     public int assignPartID() {
-        System.out.println(allParts.size());
         if (allParts.isEmpty()) {
             return 1;
         } 
         return allParts.get(allParts.size() - 1).getPartID() + 1;
+    }
+    
+    public int assignProductID() {
+        if (products.isEmpty()) {
+            return 1;
+        }
+        return products.get(products.size() - 1).getProductID() + 1;
     }
     
     public ArrayList getAllParts() {

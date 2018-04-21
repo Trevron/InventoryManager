@@ -141,9 +141,9 @@ public class FXMLMainController implements Initializable {
     @FXML
     void partModifyButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Modify part button pressed!");
-        state.setSelectedPart(mainPartTable.getSelectionModel().getSelectedItem());
+        this.state.setSelectedPart(mainPartTable.getSelectionModel().getSelectedItem());
         
-        if (state.getSelectedPart() != null) {
+        if (this.state.getSelectedPart() != null) {
             System.out.println(state.getSelectedPart().getName());
             int partID = state.getSelectedPart().getPartID();
             String name = state.getSelectedPart().getName();
@@ -229,36 +229,34 @@ public class FXMLMainController implements Initializable {
     @FXML
     void productModifyButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Modify product button pressed!");
-        
-        Stage stage;
-        Parent root;
-
-        //get reference to the button's stage
-        stage=(Stage) productModifyButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLModifyProduct.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        this.state.setSelectedProduct(mainProductTable.getSelectionModel().getSelectedItem());
+        if (this.state.getSelectedProduct() != null) {       
+            Stage stage;
+            Parent root;
+            //get reference to the button's stage
+            stage=(Stage) productModifyButton.getScene().getWindow();
+            //load up other FXML document
+            root = FXMLLoader.load(getClass().getResource("FXMLModifyProduct.fxml"));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            Alerts.getAlert("nullSelect").showAndWait();
+        }
     }
 
     @FXML
     void productSearchButton(ActionEvent event) {
         System.out.println("Product search button pressed!");
-        
         // clear/initialize list
         this.productList.clear();
-        
         String productName = productSearchField.getText();
         System.out.println("searching for product: " + productSearchField.getText());
         //Pass input using overloaded method.
         ArrayList<Product> foundProducts = state.getInventory().lookupProduct(productName);
         this.productList.addAll(foundProducts);
-        
         //add returned part to observable list
         mainProductTable.setItems(this.productList);
-      
     }
     
 

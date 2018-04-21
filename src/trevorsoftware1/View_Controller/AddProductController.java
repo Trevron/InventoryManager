@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -140,19 +141,32 @@ public class AddProductController implements Initializable {
             this.associatedPartList.addAll(associatedParts);
         } else {
             System.out.println("No part selected");
-        }
-        
+            Alerts.getAlert("nullSelect").showAndWait();
+        }      
     }
     
     @FXML
     void addProductDeleteButtonHandler(ActionEvent event) {
         System.out.println("Delete button pressed!");
+        this.state.setSelectedPart(addProductTable2.getSelectionModel().getSelectedItem());
+        if(this.state.getSelectedPart() != null) {
+            Alerts.getAlert("delete").showAndWait();
+            if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {
+                associatedParts.remove(this.state.getSelectedPart());
+                this.state.setSelectedPart(null);
+                this.associatedPartList.clear();
+                this.associatedPartList.addAll(associatedParts);
+            }
+        } else {
+            System.out.println("No part selected");
+        }
     }
 
     @FXML
     void addProductSaveButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Save button pressed!");
-        int productID = 0;
+        // auto generate product ID
+        int productID = this.state.getInventory().assignProductID();
         String name = "default";
         double price = 0.0;
         int inStock = 0;
@@ -162,7 +176,6 @@ public class AddProductController implements Initializable {
         boolean numFormat = false;
         
         try {
-            productID = Integer.parseInt(addProductIDTextField.getText());
             name = addProductNameTextField.getText();
             price = Double.parseDouble(addProductPriceTextField.getText());
             inStock = Integer.parseInt(addProductInstockTextField.getText());
@@ -200,18 +213,14 @@ public class AddProductController implements Initializable {
         }
         
         if (isValid) {
+            // Create new product and add to inventory
             Product product = new Product(productID, name, price, inStock, min, max, associatedParts);
-
             this.state.getInventory().addProduct(product);
-
+            // switch back to main screen
             Stage stage;
             Parent root;
-
-            //get reference to the button's stage
             stage=(Stage) addProductCancelButton.getScene().getWindow();
-            //load up other FXML document
             root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -252,31 +261,32 @@ public class AddProductController implements Initializable {
         this.state = State.getInstance();
         
         // add product part table 1
-
-            this.partList = FXCollections.observableArrayList();
-            this.partList.clear();
-            this.partList.addAll(state.getInventory().getAllParts());
-            System.out.println(Arrays.toString(state.getInventory().getAllParts().toArray()));
-            this.addProductTable1.setItems(this.partList);
-            // Set up table cells
-            addProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
-            addProductPartNameCol1.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
-            addProductPartInvCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
-            addProductPartPriceCol1.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+        this.partList = FXCollections.observableArrayList();
+        this.partList.clear();
+        this.partList.addAll(state.getInventory().getAllParts());
+        System.out.println(Arrays.toString(state.getInventory().getAllParts().toArray()));
+        this.addProductTable1.setItems(this.partList);
+        // Set up table cells
+        addProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+        addProductPartNameCol1.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+        addProductPartInvCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+        addProductPartPriceCol1.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
   
         
         // add product associated parts table 2
-            this.associatedPartList = FXCollections.observableArrayList();
-            this.associatedPartList.clear();
-            this.associatedPartList.addAll(associatedParts);
-            System.out.println(Arrays.toString(associatedParts.toArray()));
-            
-            this.addProductTable2.setItems(this.associatedPartList);
-            // Set up table cells
-            addProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
-            addProductPartNameCol2.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
-            addProductPartInvCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
-            addProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+        this.associatedPartList = FXCollections.observableArrayList();
+        this.associatedPartList.clear();
+        this.associatedPartList.addAll(associatedParts);
+        System.out.println(Arrays.toString(associatedParts.toArray()));
+        this.addProductTable2.setItems(this.associatedPartList);
+        // Set up table cells
+        addProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+        addProductPartNameCol2.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+        addProductPartInvCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+        addProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+
+        // disable product ID for autogen
+        this.addProductIDTextField.setDisable(true);
     }
     
 }

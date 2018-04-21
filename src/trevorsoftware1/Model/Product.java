@@ -112,7 +112,7 @@ public class Product {
         return null;
     }
     
-    public ArrayList getAssociatedParts () {
+    public ArrayList getAssociatedParts() {
         return associatedParts;
     }
     

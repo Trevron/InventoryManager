@@ -7,7 +7,10 @@ package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,8 +21,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import trevorsoftware1.Model.Part;
+import trevorsoftware1.Model.Product;
 import trevorsoftware1.Model.State;
 
 /**
@@ -28,6 +33,7 @@ import trevorsoftware1.Model.State;
  */
 public class ModifyProductController implements Initializable {
     
+    private ObservableList<Part> partList, associatedPartList;
     private State state;
 
     // Modify product controller! - - - - -  - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,8 +133,71 @@ public class ModifyProductController implements Initializable {
     }
 
     @FXML
-    void modProductSaveButtonHandler(ActionEvent event) {
+    void modProductSaveButtonHandler(ActionEvent event) throws IOException {
         System.out.println("Save button pressed!");
+        
+        String name = "default";
+        double price = 0.0;
+        int inStock = 0;
+        int min = 0;
+        int max = 0;
+        boolean isValid = false;
+        boolean numFormat = false;
+        
+        try {
+            name = modProductNameTextField.getText();
+            price = Double.parseDouble(modProductPriceTextField.getText());
+            inStock = Integer.parseInt(modProductInstockTextField.getText());
+            min = Integer.parseInt(modProductMinTextField.getText());
+            max = Integer.parseInt(modProductMaxTextField.getText());
+        } catch (NumberFormatException e) {
+            System.err.println("NumberFormatException: " + e.getMessage());
+            Alerts.getAlert("numFormatExc").showAndWait();
+            numFormat = true;
+        }
+        
+        if (min > max) {
+            System.out.println("Min cannot be greater than max");
+            Alerts.getAlert("minOverMax").showAndWait();
+        } else if (min < 0) {
+            System.out.println("Min must be at least 0");
+            Alerts.getAlert("minUnderZero").showAndWait();
+        } else if (inStock < min) {
+            System.out.println("Inv cannot be less than min");
+            Alerts.getAlert("invUnderMin").showAndWait();
+        } else if (inStock > max) {
+            System.out.println("Inv cannot be greater than max");
+            Alerts.getAlert("invOverMax").showAndWait();
+        } else if (this.state.getSelectedProduct().getAssociatedParts().isEmpty()) {
+            System.out.println("Associated part list is empty.");
+            Alerts.getAlert("noParts").showAndWait();
+        } else if (numFormat == true) {
+            System.out.println("There was a problem with part creation.");
+        } else if (price < checkPrice()) {
+            System.out.println("Price cannot be less than total cost of associated parts.");
+            Alerts.getAlert("lowPrice").showAndWait();
+        } else {
+            System.out.println("Validation succesful");
+            isValid = true;
+        }
+        
+        if (isValid) {
+            this.state.getSelectedProduct().setName(name);
+            this.state.getSelectedProduct().setPrice(price);
+            this.state.getSelectedProduct().setInStock(inStock);
+            this.state.getSelectedProduct().setMin(min);
+            this.state.getSelectedProduct().setMax(max);
+            
+            Stage stage;
+            Parent root;
+            //get reference to the button's stage
+            stage=(Stage) modProductCancelButton.getScene().getWindow();
+            //load up other FXML document
+            root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));      
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }       
     }
 
     @FXML
@@ -136,8 +205,62 @@ public class ModifyProductController implements Initializable {
         System.out.println("Search button pressed!");
     }
     
+    // Why won't this work? accessing products through state
+    private double checkPrice() {
+        double price = 0;
+        if (!this.state.getSelectedProduct().getAssociatedParts().isEmpty()) {
+            for (int i = 0; i < this.state.getSelectedProduct().getAssociatedParts().size(); i++) {
+                //Product product = this.state.getSelectedProduct();
+                //Part thePart = (Part) product.getAssociatedParts().get(i);
+                //price += thePart.getPrice();
+                price += ( (Part) this.state.getSelectedProduct().getAssociatedParts().get(i)).getPrice();
+            }
+        }
+        return price;
+    }
+    
     @Override
     public void initialize (URL url, ResourceBundle rb) {
         this.state = State.getInstance();
+        
+        
+        // add product part table 1
+        this.partList = FXCollections.observableArrayList();
+        this.partList.clear();
+        this.partList.addAll(state.getInventory().getAllParts());
+        System.out.println(Arrays.toString(state.getInventory().getAllParts().toArray()));
+        this.modProductTable1.setItems(this.partList);
+        // Set up table cells
+        modProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+        modProductPartNameCol1.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+        modProductPartInvCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+        modProductPartPriceCol1.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+  
+        
+        // add product associated parts table 2
+        this.associatedPartList = FXCollections.observableArrayList();
+        this.associatedPartList.clear();
+        this.associatedPartList.addAll(this.state.getSelectedProduct().getAssociatedParts());
+        System.out.println(Arrays.toString(this.state.getSelectedProduct().getAssociatedParts().toArray()));
+        this.modProductTable2.setItems(this.associatedPartList);
+        // Set up table cells
+        modProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
+        modProductPartNameCol2.setCellValueFactory(new PropertyValueFactory<Part, String>("name"));
+        modProductPartInvCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
+        modProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
+
+        // disable product ID for autogen
+        this.modProductPartIDTextField.setDisable(true);
+        
+        
+        // input values
+        if (this.state.getSelectedProduct() != null) {
+            modProductPartIDTextField.setText(Integer.toString(this.state.getSelectedProduct().getProductID()));
+            modProductNameTextField.setText(this.state.getSelectedProduct().getName());
+            modProductInstockTextField.setText(Integer.toString(this.state.getSelectedProduct().getInStock()));
+            modProductPriceTextField.setText(Double.toString(this.state.getSelectedProduct().getPrice()));
+            modProductMinTextField.setText(Integer.toString(this.state.getSelectedProduct().getMin()));
+            modProductMaxTextField.setText(Integer.toString(this.state.getSelectedProduct().getMax()));   
+        }    
     }
 }
