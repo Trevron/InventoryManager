@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
@@ -31,14 +26,15 @@ import trevorsoftware1.Model.State;
 
 /**
  *
- * @author treth
+ * @author Trevor Metcalf
  */
 public class FXMLMainController implements Initializable {
-    
-    private State state;
-    
+    // initialize variables
+    private State state;  
     private ObservableList<Part> partList;
     private ObservableList<Product> productList;
+    Stage stage;
+    Parent root;
  
     
     // MAIN SCREEN CONTROLS! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -94,10 +90,9 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     void mainExitButton(ActionEvent event) {
-        System.out.println("Exit button pressed!");
+        // exception control - exit confirmation
         Alerts.getAlert("exit").showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                System.out.println("Program terminated.");
                 System.exit(0);
             }
         });
@@ -105,121 +100,92 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     void partAddButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Add part button pressed!");
-        
-        Stage stage;
-        Parent root;
-
-        //get reference to the button's stage
+        // switch to add part screen
+        // get reference to the button's stage
         stage=(Stage) partAddButton.getScene().getWindow();
-        //load up other FXML document
+        // load up other FXML document
         root = FXMLLoader.load(getClass().getResource("FXMLInHousePart.fxml"));
-        
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-
     }
 
     @FXML
     void partDeleteButton(ActionEvent event) {
-        System.out.println("Delete part button pressed!");
         boolean canDelete = true;
+        // set selected part in state to highlighted part from the part table
         state.setSelectedPart(mainPartTable.getSelectionModel().getSelectedItem());
         if (this.state.getSelectedPart() != null) {
             // check if part is associated with product
+            // 'i' determines the product, 'x' determines the associated part
             for (int i = 0; i < this.state.getInventory().getProducts().size(); i++) {
                 for (int x = 0; x < ((Product) this.state.getInventory().getProducts().get(i)).getAssociatedParts().size(); x++) {
                     Product product = (Product) this.state.getInventory().getProducts().get(i);
                     Part part = (Part) product.getAssociatedParts().get(x);
                     if (part == this.state.getSelectedPart()) {
-                        System.out.println("Can't delete part, associated with product");
                         canDelete = false;
                         break;
                     } 
                 }
             } 
+            // if part is not associated with a product, delete product and update observable 
             if (canDelete) {
                 Alerts.getAlert("delete").showAndWait();
+                // exception control - delete confirmation
                 if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {   
-                    System.out.println("Deleted part: " + this.state.getSelectedPart().getName());
                     this.state.getInventory().deletePart(this.state.getSelectedPart().getPartID());
                     this.state.setSelectedPart(null);
                     this.partSearchButton(new ActionEvent());
                 } 
             } else if (canDelete == false) {
+                // exception control - can't delete part if is associated with a product
                 Alerts.getAlert("partDelete").showAndWait();
             }
         } else {
+            // exception control - nothing was selected
             Alerts.getAlert("nullSelect").showAndWait();
         }
     }
 
     @FXML
     void partModifyButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Modify part button pressed!");
+        // set selected part in state to highlighted part from the part table
         this.state.setSelectedPart(mainPartTable.getSelectionModel().getSelectedItem());
-        
         if (this.state.getSelectedPart() != null) {
-            System.out.println(state.getSelectedPart().getName());
-            int partID = state.getSelectedPart().getPartID();
-            String name = state.getSelectedPart().getName();
-
-            Stage stage;
-            Parent root;
-
-            //get reference to the button's stage
+            // go to modify part screen
+            // get reference to the button's stage
             stage=(Stage) partModifyButton.getScene().getWindow();
             //load up other FXML document
             root = FXMLLoader.load(getClass().getResource("FXMLInHouseModify.fxml"));
-
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
-            
-            System.out.println(partID);
-            System.out.println("Editing part " + partID + " | " + name);
-   
         } else {
-            System.out.println("No part selected.");
+            // exception control - No part selected
             Alerts.getAlert("nullSelect").showAndWait();
         }
-
     }
     
 
     @FXML
     void partSearchButton(ActionEvent event) {
-        System.out.println("Part search button pressed!");
-        
         // clear/initialize list
         this.partList.clear();
-        
-        // get partID from textfield and search, return part
-        //int partID = Integer.parseInt(partSearchField.getText());
+        // create array using lookupPart method
         String partName = partSearchField.getText();
-        System.out.println("searching for part: " + partSearchField.getText());
-        //Pass input using overloaded method.
         ArrayList<Part> foundParts = state.getInventory().lookupPart(partName);
         this.partList.addAll(foundParts);
-        
-        //add returned part to observable list
-        mainPartTable.setItems(this.partList);
-        
+        // update observable with found parts
+        mainPartTable.setItems(this.partList);     
     }
 
     @FXML
     private void productAddButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Add product button pressed!");
-        
-        Stage stage;
-        Parent root;
-
-        //get reference to the button's stage
+        // switch to add product screen
+        // get reference to the button's stage
         stage=(Stage) productAddButton.getScene().getWindow();
-        //load up other FXML document
+        // load up other FXML document
         root = FXMLLoader.load(getClass().getResource("FXMLAddProduct.fxml"));
-        
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
@@ -227,34 +193,36 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     void productDeleteButton(ActionEvent event) {
-        System.out.println("Delete product button pressed!");
         boolean canDelete;
-        
+        // set selected product in state to the highlighted product from the product tableview
         state.setSelectedProduct(mainProductTable.getSelectionModel().getSelectedItem());
         if (this.state.getSelectedProduct() != null) {
+            // check if product is associated with any parts
             if (this.state.getSelectedProduct().getAssociatedParts().isEmpty()) {
+                // deletion confirmation
                 Alerts.getAlert("delete").showAndWait();
-                if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {   
-                    System.out.println("Deleted product: " + this.state.getSelectedProduct().getName());
+                if (Alerts.getAlert("delete").getResult() == ButtonType.OK) { 
+                    // remove product from inventory and update observable
                     this.state.getInventory().removeProduct(this.state.getSelectedProduct().getProductID());
                     this.state.setSelectedProduct(null);
                     this.productSearchButton(new ActionEvent());
                 }
             } else {
+                // exception contol - product cannot be deleted if there are associated parts
                 Alerts.getAlert("productDelete").showAndWait();
             }
         } else {
+            // exception control - nothing was selected
             Alerts.getAlert("nullSelect").showAndWait();
         }
     }
 
     @FXML
     void productModifyButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Modify product button pressed!");
+        // set selected product in state to the highlighted product from the product table
         this.state.setSelectedProduct(mainProductTable.getSelectionModel().getSelectedItem());
         if (this.state.getSelectedProduct() != null) {       
-            Stage stage;
-            Parent root;
+            //switch to modify product screen
             //get reference to the button's stage
             stage=(Stage) productModifyButton.getScene().getWindow();
             //load up other FXML document
@@ -263,21 +231,20 @@ public class FXMLMainController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } else {
+            // exception control - nothing was selected
             Alerts.getAlert("nullSelect").showAndWait();
         }
     }
 
     @FXML
     void productSearchButton(ActionEvent event) {
-        System.out.println("Product search button pressed!");
         // clear/initialize list
         this.productList.clear();
+        // create an array using lookupProduct method
         String productName = productSearchField.getText();
-        System.out.println("searching for product: " + productSearchField.getText());
-        //Pass input using overloaded method.
         ArrayList<Product> foundProducts = state.getInventory().lookupProduct(productName);
         this.productList.addAll(foundProducts);
-        //add returned part to observable list
+        // update observable with found products
         mainProductTable.setItems(this.productList);
     }
     
@@ -285,9 +252,9 @@ public class FXMLMainController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+        // get instance of state
         this.state = State.getInstance();
-        
+        // get parts from inventory and add them to the observable array list
         // main part table
         this.partList = FXCollections.observableArrayList();
         this.partList.clear();
@@ -299,7 +266,7 @@ public class FXMLMainController implements Initializable {
         partInvColumn.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
         partPriceColumn.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
 
-
+        // get products from inventory and add them to the observable array list
         // main product table
         this.productList = FXCollections.observableArrayList();
         this.productList.clear();
@@ -311,8 +278,6 @@ public class FXMLMainController implements Initializable {
         productInventoryColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer>("inStock"));
         productPriceColumn.setCellValueFactory(new PropertyValueFactory<Product, Double>("price"));
     }
-    
-    
-   
+ 
 }
 

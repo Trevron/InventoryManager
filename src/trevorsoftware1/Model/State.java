@@ -1,17 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1.Model;
 
 /**
  *
- * @author TrevTop
+ * @author Trevor Metcalf
  */
 public class State {
+    /* This state class is used as a singleton to allow data to pass 
+    // between multiple FXML controllers. This allows for less clutter
+    // and is primarily used to access the inventory, as well as setting
+    // a selected product or part that can be accessed globally through
+    // a get method. 
+    */
+    
+    // initialize the singleton instance of state
     private static final State state = new State();
-
+    // initialize variables
     private Inventory inventory;
     private Part selectedPart;
     private Product selectedProduct;

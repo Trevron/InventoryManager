@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
@@ -33,13 +28,15 @@ import trevorsoftware1.Model.State;
 
 /**
  *
- * @author TrevTop
+ * @author Trevor Metcalf
  */
 public class AddProductController implements Initializable {
     
     private ObservableList<Part> partList, associatedPartList;
     private ArrayList<Part> associatedParts = new ArrayList();
     private State state;
+    Stage stage;
+    Parent root;
     
     // Add product controller! - - - - - - - - -  - - - - - - - - - - -  - - - - - - - - - - - 
     
@@ -114,59 +111,57 @@ public class AddProductController implements Initializable {
 
     @FXML
     void addProductCancelButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Cancel button pressed!");
-        
-        
-        Stage stage;
-        Parent root;
-
-        //get reference to the button's stage
-        stage=(Stage) addProductCancelButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        // show cancel confirmation
+        Alerts.getAlert("cancel").showAndWait();
+        if (Alerts.getAlert("cancel").getResult() == ButtonType.OK) {
+            // return to main screen
+            // get reference to the button's stage
+            stage=(Stage) addProductCancelButton.getScene().getWindow();
+            //load up other FXML document
+            root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     @FXML
     void addProductAddButtonHandler(ActionEvent event) {
-        System.out.println("Add button pressed!");
+        // set selected part in state to the highlighted part from table1
         this.state.setSelectedPart(addProductTable1.getSelectionModel().getSelectedItem());
         if(this.state.getSelectedPart() != null) {
+            // add selected part to associated part array
             associatedParts.add(this.state.getSelectedPart());
             this.state.setSelectedPart(null);
             this.associatedPartList.clear();
             this.associatedPartList.addAll(associatedParts);
         } else {
-            System.out.println("No part selected");
             Alerts.getAlert("nullSelect").showAndWait();
         }      
     }
     
     @FXML
     void addProductDeleteButtonHandler(ActionEvent event) {
-        System.out.println("Delete button pressed!");
+        // set selected part in state to the highlighted part from table1
         this.state.setSelectedPart(addProductTable2.getSelectionModel().getSelectedItem());
         if(this.state.getSelectedPart() != null) {
+            // show deletion confirmation
             Alerts.getAlert("delete").showAndWait();
             if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {
+                // delete associated part, set selected part to null and update observable
                 associatedParts.remove(this.state.getSelectedPart());
                 this.state.setSelectedPart(null);
                 this.associatedPartList.clear();
                 this.associatedPartList.addAll(associatedParts);
             }
-        } else {
-            System.out.println("No part selected");
         }
     }
 
     @FXML
     void addProductSaveButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Save button pressed!");
-        // auto generate product ID
+        // auto generate product ID 
         int productID = this.state.getInventory().assignProductID();
+        // initialize variables with default values
         String name = "default";
         double price = 0.0;
         int inStock = 0;
@@ -174,7 +169,8 @@ public class AddProductController implements Initializable {
         int max = 0;
         boolean isValid = false;
         boolean numFormat = false;
-        
+        // make sure correct inputs are passed in
+        // exception controls
         try {
             name = addProductNameTextField.getText();
             price = Double.parseDouble(addProductPriceTextField.getText());
@@ -182,33 +178,24 @@ public class AddProductController implements Initializable {
             min = Integer.parseInt(addProductMinTextField.getText());
             max = Integer.parseInt(addProductMaxTextField.getText());
         } catch (NumberFormatException e) {
-            System.err.println("NumberFormatException: " + e.getMessage());
             Alerts.getAlert("numFormatExc").showAndWait();
             numFormat = true;
         }
-        
+        // exception controls / validation test
         if (min > max) {
-            System.out.println("Min cannot be greater than max");
             Alerts.getAlert("minOverMax").showAndWait();
         } else if (min < 0) {
-            System.out.println("Min must be at least 0");
             Alerts.getAlert("minUnderZero").showAndWait();
         } else if (inStock < min) {
-            System.out.println("Inv cannot be less than min");
             Alerts.getAlert("invUnderMin").showAndWait();
         } else if (inStock > max) {
-            System.out.println("Inv cannot be greater than max");
             Alerts.getAlert("invOverMax").showAndWait();
         } else if (associatedParts.isEmpty()) {
-            System.out.println("Associated part list is empty.");
             Alerts.getAlert("noParts").showAndWait();
         } else if (numFormat == true) {
-            System.out.println("There was a problem with part creation.");
         } else if (price < checkPrice()) {
-            System.out.println("Price cannot be less than total cost of associated parts.");
             Alerts.getAlert("lowPrice").showAndWait();
         } else {
-            System.out.println("Validation succesful");
             isValid = true;
         }
         
@@ -217,8 +204,6 @@ public class AddProductController implements Initializable {
             Product product = new Product(productID, name, price, inStock, min, max, associatedParts);
             this.state.getInventory().addProduct(product);
             // switch back to main screen
-            Stage stage;
-            Parent root;
             stage=(Stage) addProductCancelButton.getScene().getWindow();
             root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
             Scene scene = new Scene(root);
@@ -229,19 +214,14 @@ public class AddProductController implements Initializable {
 
     @FXML
     void addProductSearchButtonHandler(ActionEvent event) {
-        System.out.println("Search button pressed!");
-        
+        // initialize search results
         this.partList.clear();
-        
+        // search for part from textfield input
         String partName = addProductSearchTextField.getText();
-        System.out.println("searching for partID: " + addProductSearchTextField.getText());
         ArrayList<Part> foundParts = this.state.getInventory().lookupPart(partName);
+        //add returned parts to / update observable list   
         this.partList.addAll(foundParts);
-        
-        //add returned part to observable list
-        addProductTable1.setItems(this.partList);
-        
-        
+        addProductTable1.setItems(this.partList);  
     }
     
     // check price of associated parts
@@ -257,14 +237,14 @@ public class AddProductController implements Initializable {
    
     @Override
     public void initialize (URL url, ResourceBundle rb) {
-        
+        // get instance of state
         this.state = State.getInstance();
         
         // add product part table 1
+        // get parts from inventory and add them to the observable array list
         this.partList = FXCollections.observableArrayList();
         this.partList.clear();
         this.partList.addAll(state.getInventory().getAllParts());
-        System.out.println(Arrays.toString(state.getInventory().getAllParts().toArray()));
         this.addProductTable1.setItems(this.partList);
         // Set up table cells
         addProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
@@ -274,10 +254,10 @@ public class AddProductController implements Initializable {
   
         
         // add product associated parts table 2
+        // assign array list to tableview even though the array list is empty
         this.associatedPartList = FXCollections.observableArrayList();
         this.associatedPartList.clear();
         this.associatedPartList.addAll(associatedParts);
-        System.out.println(Arrays.toString(associatedParts.toArray()));
         this.addProductTable2.setItems(this.associatedPartList);
         // Set up table cells
         addProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
@@ -287,6 +267,13 @@ public class AddProductController implements Initializable {
 
         // disable product ID for autogen
         this.addProductIDTextField.setDisable(true);
+        
+        // set default text
+        addProductNameTextField.setText("default");
+        addProductInstockTextField.setText("0");
+        addProductPriceTextField.setText("0.00");
+        addProductMinTextField.setText("0");
+        addProductMaxTextField.setText("0"); 
     }
     
 }

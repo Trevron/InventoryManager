@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1;
 
 import javafx.application.Application;
@@ -15,30 +10,23 @@ import trevorsoftware1.Model.State;
 
 /**
  *
- * @author treth
+ * @author Trevor Metcalf
  */
 public class TrevorSoftware1 extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+        // load main screen
         Parent root = FXMLLoader.load(getClass().getResource("View_Controller/FXMLMainScreen.fxml"));
-        
         Scene scene = new Scene(root);
-        
         stage.setScene(scene);
         stage.show();
-        
-        
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        launch(args);
-        
+        launch(args);   
     }
-    
+    // load singleton State class
     private static Class getClass(String classname) throws ClassNotFoundException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader == null) {

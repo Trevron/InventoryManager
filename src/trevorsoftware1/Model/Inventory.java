@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1.Model;
 
 import java.util.ArrayList;
 
 /**
  *
- * @author treth
+ * @author Trevor Metcalf
  */
 public class Inventory {
     
@@ -27,7 +22,7 @@ public class Inventory {
     public void addProduct(Product x) {
         products.add(x);
     }
-
+    // if product is found, it is removed and true is returned
     public boolean removeProduct(int x){
         boolean wasRemoved = false;
         for (Product product : products) {
@@ -40,7 +35,7 @@ public class Inventory {
         } 
         return wasRemoved;  
     }
-
+    // returns an array list of products that match the String input
     public ArrayList<Product> lookupProduct(String name) {
         ArrayList<Product> productList = new ArrayList();
         for (int i = 0; i < products.size(); i++) {
@@ -87,7 +82,7 @@ public class Inventory {
         return wasRemoved;
     }
     
-    
+    // returns an arraylist of parts matching the String input
     public ArrayList<Part> lookupPart(String name) {
         ArrayList<Part> parts = new ArrayList();
         for (int i = 0; i < allParts.size(); i++) {
@@ -99,6 +94,7 @@ public class Inventory {
         return parts;
     }
     
+    // looks up parts based off of partID
     private Part lookupPart(int partID) {
         for (int i = 0; i < allParts.size(); i++) {
             if (allParts.get(i).getPartID() == partID) {
@@ -118,7 +114,7 @@ public class Inventory {
         part.setPrice(price);  
     }
 */
-    
+    // replace old part with new part
     public void updatePart(Part oldPart, Part newPart) {
         for (int i = 0; i < allParts.size(); i++) {
             if (allParts.get(i).equals(oldPart)) {
@@ -130,7 +126,7 @@ public class Inventory {
         }
     }
         
-    
+    // used for ID autogeneration
     public int assignPartID() {
         if (allParts.isEmpty()) {
             return 1;
@@ -138,6 +134,7 @@ public class Inventory {
         return allParts.get(allParts.size() - 1).getPartID() + 1;
     }
     
+    // used for ID autogeneration
     public int assignProductID() {
         if (products.isEmpty()) {
             return 1;
@@ -145,13 +142,14 @@ public class Inventory {
         return products.get(products.size() - 1).getProductID() + 1;
     }
     
+    // used to access allParts
     public ArrayList getAllParts() {
         return allParts;
     }
-    
+    // used to access products
     public ArrayList getProducts() {
         return products;
     }
     
-} //end 
+} 
 

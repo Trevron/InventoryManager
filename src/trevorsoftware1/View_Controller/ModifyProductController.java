@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
@@ -31,13 +26,15 @@ import trevorsoftware1.Model.State;
 
 /**
  *
- * @author TrevTop
+ * @author Trevor Metcalf
  */
 public class ModifyProductController implements Initializable {
     
     private ObservableList<Part> partList, associatedPartList;
     private ArrayList<Part> associatedParts = new ArrayList();
     private State state;
+    Stage stage;
+    Parent root;
 
     // Modify product controller! - - - - -  - - - - - - - - - - - - - - - - - - - - - - -
     
@@ -109,58 +106,61 @@ public class ModifyProductController implements Initializable {
 
     @FXML
     void modProductAddButtonHandler(ActionEvent event) {
-        System.out.println("Add button pressed!");
+        // set selected part in state to the highlighted part from table1
         this.state.setSelectedPart(modProductTable1.getSelectionModel().getSelectedItem());
         if(this.state.getSelectedPart() != null) {
+            // add selected part to associated parts
             associatedParts.add(this.state.getSelectedPart());
+            // clear selected part from state
             this.state.setSelectedPart(null);
+            // update observable list 
             this.associatedPartList.clear();
             this.associatedPartList.addAll(associatedParts);
         } else {
-            System.out.println("No part selected");
+            // Show error stating nothing was selected
             Alerts.getAlert("nullSelect").showAndWait();
         }  
     }
 
     @FXML
     void modProductCancelButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Cancel button pressed!");
-        
-        
-        Stage stage;
-        Parent root;
-
-        //get reference to the button's stage
-        stage=(Stage) modProductCancelButton.getScene().getWindow();
-        //load up other FXML document
-        root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        // Display confirmation
+        Alerts.getAlert("cancel").showAndWait();
+        if (Alerts.getAlert("cancel").getResult() == ButtonType.OK) {
+            // go back to main screen
+            //get reference to the button's stage
+            stage=(Stage) modProductCancelButton.getScene().getWindow();
+            //load up other FXML document
+            root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     @FXML
     void modProductDeleteButtonHandler(ActionEvent event) {
-        System.out.println("Delete button pressed!");
+        // set selected part based off of the highlighted part from the tableview
         this.state.setSelectedPart(modProductTable2.getSelectionModel().getSelectedItem());
         if(this.state.getSelectedPart() != null) {
+            // Show deletion confirmation
             Alerts.getAlert("delete").showAndWait();
             if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {
+                // delete part from associated parts list and update the observable
                 associatedParts.remove(this.state.getSelectedPart());
                 this.state.setSelectedPart(null);
                 this.associatedPartList.clear();
                 this.associatedPartList.addAll(associatedParts);
             }
         } else {
-            System.out.println("No part selected");
+            // ERROR - Nothing was selected -
+            Alerts.getAlert("nullSelect").showAndWait();
         }
     }
 
     @FXML
     void modProductSaveButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Save button pressed!");
-        
+        // initialize values
         String name = "default";
         double price = 0.0;
         int inStock = 0;
@@ -168,7 +168,8 @@ public class ModifyProductController implements Initializable {
         int max = 0;
         boolean isValid = false;
         boolean numFormat = false;
-        
+        // make sure the correct inputs are passed in
+        // exception controls
         try {
             name = modProductNameTextField.getText();
             price = Double.parseDouble(modProductPriceTextField.getText());
@@ -180,33 +181,27 @@ public class ModifyProductController implements Initializable {
             Alerts.getAlert("numFormatExc").showAndWait();
             numFormat = true;
         }
-        
+        // exception controls
         if (min > max) {
-            System.out.println("Min cannot be greater than max");
             Alerts.getAlert("minOverMax").showAndWait();
         } else if (min < 0) {
-            System.out.println("Min must be at least 0");
             Alerts.getAlert("minUnderZero").showAndWait();
         } else if (inStock < min) {
-            System.out.println("Inv cannot be less than min");
             Alerts.getAlert("invUnderMin").showAndWait();
         } else if (inStock > max) {
-            System.out.println("Inv cannot be greater than max");
             Alerts.getAlert("invOverMax").showAndWait();
         } else if (associatedParts.isEmpty()) {
-            System.out.println("Associated part list is empty.");
             Alerts.getAlert("noParts").showAndWait();
         } else if (numFormat == true) {
-            System.out.println("There was a problem with part creation.");
         } else if (price < checkPrice()) {
-            System.out.println("Price cannot be less than total cost of associated parts.");
             Alerts.getAlert("lowPrice").showAndWait();
         } else {
-            System.out.println("Validation succesful");
+            // validation successful
             isValid = true;
         }
         
         if (isValid) {
+            // if exception controls are passed, set the modifications to selected product
             this.state.getSelectedProduct().setName(name);
             this.state.getSelectedProduct().setPrice(price);
             this.state.getSelectedProduct().setInStock(inStock);
@@ -214,8 +209,7 @@ public class ModifyProductController implements Initializable {
             this.state.getSelectedProduct().setMax(max);
             this.state.getSelectedProduct().setAssociatedParts(associatedParts);
             
-            Stage stage;
-            Parent root;
+            // return to main screen 
             //get reference to the button's stage
             stage=(Stage) modProductCancelButton.getScene().getWindow();
             //load up other FXML document
@@ -228,16 +222,13 @@ public class ModifyProductController implements Initializable {
 
     @FXML
     void modProductSearchButtonHandler(ActionEvent event) {
-        System.out.println("Search button pressed!");
-        
+        // clear previous search from table
         this.partList.clear();
-        
+        // lookupPart returns an arraylist of parts matching the String input
         String partName = modProductSearchTextField.getText();
-        System.out.println("searching for part: " + modProductSearchTextField.getText());
         ArrayList<Part> foundParts = this.state.getInventory().lookupPart(partName);
         this.partList.addAll(foundParts);
-        
-        //add returned part to observable list
+        //add returned parts to observable list
         modProductTable1.setItems(this.partList);
     }
     
@@ -254,14 +245,13 @@ public class ModifyProductController implements Initializable {
     
     @Override
     public void initialize (URL url, ResourceBundle rb) {
+        // get instance of State
         this.state = State.getInstance();
-        
-        
         // add product part table 1
+        // get parts from inventory and add them to the observable array list
         this.partList = FXCollections.observableArrayList();
         this.partList.clear();
         this.partList.addAll(state.getInventory().getAllParts());
-        System.out.println(Arrays.toString(state.getInventory().getAllParts().toArray()));
         this.modProductTable1.setItems(this.partList);
         // Set up table cells
         modProductPartIDCol1.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
@@ -271,11 +261,11 @@ public class ModifyProductController implements Initializable {
   
         
         // add product associated parts table 2
+        // get products from inventory and add them to the observable array list
         this.associatedPartList = FXCollections.observableArrayList();
         this.associatedPartList.clear();
         this.associatedParts.addAll(this.state.getSelectedProduct().getAssociatedParts());
         this.associatedPartList.addAll(associatedParts);
-        System.out.println(Arrays.toString(associatedParts.toArray()));
         this.modProductTable2.setItems(this.associatedPartList);
         // Set up table cells
         modProductPartIDCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("partID"));
@@ -283,11 +273,11 @@ public class ModifyProductController implements Initializable {
         modProductPartInvCol2.setCellValueFactory(new PropertyValueFactory<Part, Integer>("inStock"));
         modProductPartPriceCol2.setCellValueFactory(new PropertyValueFactory<Part, Double>("price"));
 
-        // disable product ID for autogen
+        // disable product ID for automatic geerationn
         this.modProductPartIDTextField.setDisable(true);
         
         
-        // input values
+        // input current values into textfields
         if (this.state.getSelectedProduct() != null) {
             modProductPartIDTextField.setText(Integer.toString(this.state.getSelectedProduct().getProductID()));
             modProductNameTextField.setText(this.state.getSelectedProduct().getName());

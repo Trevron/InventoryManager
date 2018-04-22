@@ -1,18 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1.View_Controller;
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 
 /**
  *
- * @author TrevTop
+ * @author Trevor Metcalf
  */
 public class Alerts {
+    // initialize alerts
     private static final Alert numFormatExc = new Alert(Alert.AlertType.ERROR);
     private static final Alert cancelAlert = new Alert(Alert.AlertType.CONFIRMATION);
     private static final Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -28,6 +23,11 @@ public class Alerts {
     private static final Alert partDelete = new Alert(Alert.AlertType.ERROR);
     private static final Alert productDelete = new Alert(Alert.AlertType.ERROR);
    
+    // This class constructs alerts based on the required exceptions 
+    // The method getAlert() is used to access the alerts from the various FXML controllers
+    // getAlert() also defines the various text displayed by each alert
+    // The alerts pass on useful information to the end user in popup style windows
+    
     public static Alert getAlert(String alertType) {
         switch(alertType) {
             case "numFormatExc":

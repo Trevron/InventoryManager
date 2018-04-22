@@ -16,6 +16,7 @@ public abstract class Part {
     private final IntegerProperty min = new SimpleIntegerProperty();
     private final IntegerProperty max = new SimpleIntegerProperty();
     
+    // constructors
     public Part(){
         this(0, "default", 0.0, 0, 0, 100);
     }
@@ -27,6 +28,8 @@ public abstract class Part {
         this.min.set(min);
         this.max.set(max);
     }
+    
+    // getters and setters
     public void setName(String x){
         name.set(x);
     }
@@ -38,6 +41,7 @@ public abstract class Part {
     public StringProperty nameProperty() {
         return name;
     }
+    
     
     public void setPrice(double x) {
         price.set(x);

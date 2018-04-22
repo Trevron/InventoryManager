@@ -18,12 +18,11 @@ public class Product {
     private final IntegerProperty min = new SimpleIntegerProperty();
     private final IntegerProperty max = new SimpleIntegerProperty();
     
+    // constructors
     public Product() {
         this(0, "default", 0.00, 0, 0, 0, new ArrayList());
     }
-    
-    
-    
+
     public Product(int productID, String name, double price, int inStock, int min, int max, ArrayList associatedParts) {
         this.productID.set(productID);
         this.name.set(name);
@@ -34,6 +33,7 @@ public class Product {
         this.associatedParts = associatedParts;
     }
     
+    // getters and setters
     public void setName(String x) {
         name.set(x);
     }
@@ -94,33 +94,6 @@ public class Product {
         return max;
     }
     
-    public void addAssociatedPart(Part x) {
-        associatedParts.add(x);
-    }
-    
-    public boolean removeAssociatedPart(Part x) {
-        return associatedParts.remove(x);
-    }
-    
-    public Part lookupAssociatedPart(int x) {
-        for (Part part : associatedParts) {
-            if (part.getPartID() == x) {
-                System.out.println("The name of the part with the ID " + x +" is " + part.getName());
-                return part;
-            } 
-        } 
-        return null;
-    }
-    
-    public ArrayList getAssociatedParts() {
-        return associatedParts;
-    }
-    
-    public void setAssociatedParts(ArrayList associatedParts) {
-        this.associatedParts.clear();
-        this.associatedParts.addAll(associatedParts);
-    }
-    
     public void setProductID(int x) {
         productID.set(x);
     }
@@ -132,5 +105,34 @@ public class Product {
     public IntegerProperty productIDProperty() {
         return productID;
     }
+     
+    // - associated part list interactions -
+    public void addAssociatedPart(Part x) {
+        associatedParts.add(x);
+    }
     
+    public boolean removeAssociatedPart(Part x) {
+        return associatedParts.remove(x);
+    }
+    // lookup part based on part ID
+    public Part lookupAssociatedPart(int x) {
+        for (Part part : associatedParts) {
+            if (part.getPartID() == x) {
+                System.out.println("The name of the part with the ID " + x +" is " + part.getName());
+                return part;
+            } 
+        } 
+        return null;
+    }
+    // get associated parts list
+    public ArrayList getAssociatedParts() {
+        return associatedParts;
+    }
+    
+    // used to update associated parts list
+    public void setAssociatedParts(ArrayList associatedParts) {
+        this.associatedParts.clear();
+        this.associatedParts.addAll(associatedParts);
+    }
+     
 }

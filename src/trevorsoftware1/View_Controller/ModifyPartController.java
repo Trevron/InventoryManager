@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
@@ -29,13 +24,15 @@ import trevorsoftware1.Model.State;
 
 /**
  *
- * @author TrevTop
+ * @author Trevor Metcalf
  */
 public class ModifyPartController implements Initializable {
-    
+    // initialize variables
     private State state;
+    Stage stage;
+    Parent root;
     
-       // Modify part inhouse controller!!  -- - - - - - - - - - - - - - - - - - -- - - - - - 
+    // Modify part inhouse controller!!  -- - - - - - - - - - - - - - - - - - -- - - - - - 
    
     @FXML
     private AnchorPane ihmod_partScreen;
@@ -83,33 +80,28 @@ public class ModifyPartController implements Initializable {
     private ToggleGroup inorout;
     
     public void ihmod_radioHandler (ActionEvent event) {
+        // check radio button toggle
         if (ihmod_inhouseRadio.isSelected()) {
-            System.out.println("Inhouse part.");
+            // set label for machineID
             inoroutLabel.setText("MachineID");
             ihmod_partMachineIDTextField.promptTextProperty().setValue("Machine ID");
         } else if (ihmod_outsourcedRadio.isSelected()) {
-            System.out.println("Outsourced part.");
+            // set radio button for company name
             inoroutLabel.setText("Company Name");
             ihmod_partMachineIDTextField.promptTextProperty().setValue("Company name");
         }
     }
     
-    
     @FXML
     void ihmod_partCancelButtonHandler(ActionEvent event) throws IOException {
-
-        System.out.println("Cancel button pressed!");
-
+        // exception control - cancel confirmation
         Alerts.getAlert("cancel").showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    System.out.println("Add part cancelled.");
-                    
-                    Stage stage;
-                    Parent root;
-                    //get reference to the button's stage
+                    // return to main screen
+                    // get reference to the button's stage
                     stage=(Stage) ihmod_partCancelButton.getScene().getWindow();
-                    //load up other FXML document
+                    // load up other FXML document
                     root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
@@ -119,14 +111,12 @@ public class ModifyPartController implements Initializable {
                 }
             
             }
-        });
-        
+        });    
     }
 
     @FXML
     void ihmod_partSaveButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Save button pressed!");
-        
+        // initialize variables
         int partID = state.getInventory().assignPartID(); // autogenerate partID
         String name = "";
         double price = 0;
@@ -141,7 +131,8 @@ public class ModifyPartController implements Initializable {
         
         // Check radio button then create correct part type
         
-        // Take input from text fields, parsing if necessary, and assign them to variables 
+        // take input from text fields, parsing if necessary, and assign them to variables 
+        // exception controls
         try {
             partID = this.state.getSelectedPart().getPartID();
             name = ihmod_partNameTextField.getText();
@@ -155,68 +146,62 @@ public class ModifyPartController implements Initializable {
                 companyName = ihmod_partMachineIDTextField.getText();
             }
         } catch (NumberFormatException e) {
-            System.err.println("NumberFormatException: " + e.getMessage());
+            // exception control - number format exception
             Alerts.getAlert("numFormatExc").showAndWait();
             numFormat = true;
         }
 
-        
+        // exception controls / validation test
         if (min > max) {
-            System.out.println("Min cannot be greater than max");
             Alerts.getAlert("minOverMax").showAndWait();
         } else if (min < 0) {
-            System.out.println("Min must be at least 0");
             Alerts.getAlert("minUnderZero").showAndWait();
         } else if (inStock < min) {
-            System.out.println("Inv cannot be less than min");
             Alerts.getAlert("invUnderMin").showAndWait();
         } else if (inStock > max) {
-            System.out.println("Inv cannot be greater than max");
             Alerts.getAlert("invOverMax").showAndWait();  
         } else if (numFormat == false) {
+            // validation successful
             isValid = true;
         }
         
         if (isValid) {
+            // set values of the selected part using state
             this.state.getSelectedPart().setPartID(partID);
             this.state.getSelectedPart().setName(name);
             this.state.getSelectedPart().setPrice(price);
             this.state.getSelectedPart().setInStock(inStock);
             this.state.getSelectedPart().setMin(min);
             this.state.getSelectedPart().setMax(max);
+        
             if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
-                System.out.println("Inhouse part modified.");
+                // instance of Inhouse with inhouse selected
                 ((Inhouse)this.state.getSelectedPart()).setMachineID(machineID);
             } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
-                System.out.println("Outsourced part modified.");
+                // instance of Outsourced with outsourced selected
                 ((Outsourced)this.state.getSelectedPart()).setCompanyName(companyName);
             } else if (ihmod_inhouseRadio.isSelected() && this.state.getSelectedPart() instanceof Outsourced) {
-                System.out.println("Outsourced part changed to inhouse.");
+                // instance of Outsourced with inhouse selected, change part
                 Part oldPart = this.state.getSelectedPart();
                 // set selected part to new Inhouse part created from text fields
                 this.state.setSelectedPart(new Inhouse(partID, name, price, inStock, min, max, machineID));
                 // update inventory by swapping old part and new part
                 this.state.getInventory().updatePart(oldPart, this.state.getSelectedPart());
             } else if (ihmod_outsourcedRadio.isSelected() && this.state.getSelectedPart() instanceof Inhouse) {
-                System.out.println("Inhouse part changed to outsourced.");
+                // instance of Inhouse with outsourced selected, change part
                 Part oldPart = this.state.getSelectedPart();
                 // set selected part to new Outsourced part created from text fields
                 this.state.setSelectedPart(new Outsourced(partID, name, price, inStock, min, max, companyName));
                 // update inventory by swapping old part and new part
                 this.state.getInventory().updatePart(oldPart, this.state.getSelectedPart());
             }
-
+            // clear selected part in state
             this.state.setSelectedPart(null);
-
             //Go back to main screen
-            Stage stage;
-            Parent root;
-
             //get reference to the button's stage
             stage=(Stage) ihmod_partSaveButton.getScene().getWindow();
             //load up other FXML document
             root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -225,11 +210,12 @@ public class ModifyPartController implements Initializable {
     
     @Override
     public void initialize (URL url, ResourceBundle rb) {
+        // get instance of state
         this.state = State.getInstance();
-        
+        // disable partID text field for automatic ID generation
         this.ihmod_partIDTextField.setDisable(true);
         
-        
+        // set textfield inputs to the selected part's data
         if (this.state.getSelectedPart() != null) {
             ihmod_partIDTextField.setText(Integer.toString(state.getSelectedPart().getPartID()));
             ihmod_partNameTextField.setText(state.getSelectedPart().getName());
@@ -245,6 +231,5 @@ public class ModifyPartController implements Initializable {
                 ihmod_partMachineIDTextField.setText(((Outsourced)state.getSelectedPart()).getCompanyName());
             } 
         }
-    }
-    
+    }  
 }

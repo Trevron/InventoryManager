@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trevorsoftware1.View_Controller;
 
 import java.io.IOException;
@@ -31,11 +26,13 @@ import trevorsoftware1.Model.State;
 
 /**
  *
- * @author TrevTop
+ * @author Trevor Metcalf
  */
 public class AddPartController implements Initializable {
-    
+    // initialize variables
     private State state;
+    Stage stage;
+    Parent root;
     
     // Add Part InHouse Controls - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
@@ -45,7 +42,6 @@ public class AddPartController implements Initializable {
     @FXML
     private TextField idField;
     
-
     @FXML
     private TextField nameField;
 
@@ -83,24 +79,26 @@ public class AddPartController implements Initializable {
     private Label inoroutLabel;
     
     public void inHouseRadioHandler(ActionEvent event) {
+        // check radio button toggle
         if (inHouseRadio.isSelected()) {
-            System.out.println("Inhouse part.");
+            // set label for machineID
             inoroutLabel.setText("MachineID");
             machineIDField.promptTextProperty().setValue("Machine ID");
         } else if (outsourcedRadio.isSelected()) {
-            System.out.println("Outsourced part.");
+            // set label for company name
             inoroutLabel.setText("Company Name");
             machineIDField.promptTextProperty().setValue("Company name");
         }
     }
     
     public void outsourcedRadioHandler(ActionEvent event) {
+        // check radio button toggle
         if (inHouseRadio.isSelected()) {
-            System.out.println("Inhouse part.");
+            // set label for machineID
             inoroutLabel.setText("MachineID");
             machineIDField.promptTextProperty().setValue("Machine ID");
         } else if (outsourcedRadio.isSelected()) {
-            System.out.println("Outsourced part.");
+            // set label for company name
             inoroutLabel.setText("Company Name");
             machineIDField.promptTextProperty().setValue("Company name");
         }
@@ -108,18 +106,14 @@ public class AddPartController implements Initializable {
     
     @FXML
     void cancelButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Cancel button pressed!");
-    
+        // exception control - cancel confirmation
         Alerts.getAlert("cancel").showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    System.out.println("Add part cancelled.");
-                    
-                    Stage stage;
-                    Parent root;
-                    //get reference to the button's stage
+                    // return to main screen
+                    // get reference to the button's stage
                     stage=(Stage) cancelButton.getScene().getWindow();
-                    //load up other FXML document
+                    // load up other FXML document
                     root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
@@ -127,7 +121,6 @@ public class AddPartController implements Initializable {
                 } catch (IOException ex) {
                     System.out.println("IOException! Error!");
                 }
-            
             }
         });
     }
@@ -135,8 +128,7 @@ public class AddPartController implements Initializable {
     
     @FXML
     public void saveButtonHandler(ActionEvent event) throws IOException {
-        System.out.println("Save button pressed!");
-        
+        // initialize variables
         int partID = this.state.getInventory().assignPartID(); // autogenerate partID
         String name = "";
         double price = 0;
@@ -151,6 +143,7 @@ public class AddPartController implements Initializable {
         boolean numFormat = false;
         
         // Take input from text fields, parsing if necessary, and assign them to variables 
+        // exception control
         try {
             name = nameField.getText();
             price = Double.parseDouble(priceField.getText());
@@ -165,52 +158,42 @@ public class AddPartController implements Initializable {
                 companyName = machineIDField.getText();
             }
         } catch (NumberFormatException e) {
-            System.err.println("NumberFormatException: " + e.getMessage());
+            // exception control - number format exception
             Alerts.getAlert("numFormatExc").showAndWait();
             numFormat = true;
         }
 
-            
+        // exception controls / validation test  
         if (min > max) {
-            System.out.println("Min cannot be greater than max");
             Alerts.getAlert("minOverMax").showAndWait();
         } else if (min < 0) {
-            System.out.println("Min must be at least 0");
             Alerts.getAlert("minUnderZero").showAndWait();
         } else if (inStock < min) {
-            System.out.println("Inv cannot be less than min");
             Alerts.getAlert("invUnderMin").showAndWait();
         } else if (inStock > max) {
-            System.out.println("Inv cannot be greater than max");
             Alerts.getAlert("invOverMax").showAndWait();
         } else if (inhouse == false && numFormat == false) {
             part = new Outsourced(partID, name, price, inStock, min, max, companyName);
             isValid = true;
-            System.out.println("Outsourced part created.");
         } else if (inhouse == true && numFormat == false) {
             part = new Inhouse(partID, name, price, inStock, min, max, machineID);
-            isValid = true;
-            System.out.println("Inhouse part created.");  
+            isValid = true;  
         } else {
-            System.out.println("There was a problem with part creation.");
+            // validation succesful
             numFormat = false;
         }
         
-        // Add created part to inventory of parts
+        // add created part to inventory 
         if (isValid) {
+            // exception control - save confirmation
             Alerts.getAlert("save").showAndWait();
             if (Alerts.getAlert("save").getResult() == ButtonType.OK) {
                 this.state.getInventory().addPart(part);
-
-                //Go back to main screen
-                Stage stage;
-                Parent root;
-
-                //get reference to the button's stage
+                // return to main screen
+                // get reference to the button's stage
                 stage=(Stage) cancelButton.getScene().getWindow();
-                //load up other FXML document
+                // load up other FXML document
                 root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
                 stage.show();
@@ -220,13 +203,19 @@ public class AddPartController implements Initializable {
   
     @Override
     public void initialize (URL url, ResourceBundle rb) {
-        
+        // get instance of state
         this.state = State.getInstance();
 
         // disable ID field for auto generation
         this.idField.setDisable(true);
         
-        
+        // set default textfield inputs
+        nameField.setText("default");
+        invField.setText("0");
+        priceField.setText("0.00");
+        minField.setText("0");
+        maxField.setText("0");
+        machineIDField.setText("0"); 
     }
     
     
