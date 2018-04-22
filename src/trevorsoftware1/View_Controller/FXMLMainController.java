@@ -124,14 +124,31 @@ public class FXMLMainController implements Initializable {
     @FXML
     void partDeleteButton(ActionEvent event) {
         System.out.println("Delete part button pressed!");
+        boolean canDelete = true;
         state.setSelectedPart(mainPartTable.getSelectionModel().getSelectedItem());
         if (this.state.getSelectedPart() != null) {
-            Alerts.getAlert("delete").showAndWait();
-            if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {   
-                System.out.println("Deleted part: " + this.state.getSelectedPart().getName());
-                this.state.getInventory().deletePart(this.state.getSelectedPart().getPartID());
-                this.state.setSelectedPart(null);
-                this.partSearchButton(new ActionEvent());
+            // check if part is associated with product
+            for (int i = 0; i < this.state.getInventory().getProducts().size(); i++) {
+                for (int x = 0; x < ((Product) this.state.getInventory().getProducts().get(i)).getAssociatedParts().size(); x++) {
+                    Product product = (Product) this.state.getInventory().getProducts().get(i);
+                    Part part = (Part) product.getAssociatedParts().get(x);
+                    if (part == this.state.getSelectedPart()) {
+                        System.out.println("Can't delete part, associated with product");
+                        canDelete = false;
+                        break;
+                    } 
+                }
+            } 
+            if (canDelete) {
+                Alerts.getAlert("delete").showAndWait();
+                if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {   
+                    System.out.println("Deleted part: " + this.state.getSelectedPart().getName());
+                    this.state.getInventory().deletePart(this.state.getSelectedPart().getPartID());
+                    this.state.setSelectedPart(null);
+                    this.partSearchButton(new ActionEvent());
+                } 
+            } else if (canDelete == false) {
+                Alerts.getAlert("partDelete").showAndWait();
             }
         } else {
             Alerts.getAlert("nullSelect").showAndWait();
@@ -211,15 +228,20 @@ public class FXMLMainController implements Initializable {
     @FXML
     void productDeleteButton(ActionEvent event) {
         System.out.println("Delete product button pressed!");
+        boolean canDelete;
         
         state.setSelectedProduct(mainProductTable.getSelectionModel().getSelectedItem());
         if (this.state.getSelectedProduct() != null) {
-            Alerts.getAlert("delete").showAndWait();
-            if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {   
-                System.out.println("Deleted product: " + this.state.getSelectedProduct().getName());
-                this.state.getInventory().removeProduct(this.state.getSelectedProduct().getProductID());
-                this.state.setSelectedProduct(null);
-                this.productSearchButton(new ActionEvent());
+            if (this.state.getSelectedProduct().getAssociatedParts().isEmpty()) {
+                Alerts.getAlert("delete").showAndWait();
+                if (Alerts.getAlert("delete").getResult() == ButtonType.OK) {   
+                    System.out.println("Deleted product: " + this.state.getSelectedProduct().getName());
+                    this.state.getInventory().removeProduct(this.state.getSelectedProduct().getProductID());
+                    this.state.setSelectedProduct(null);
+                    this.productSearchButton(new ActionEvent());
+                }
+            } else {
+                Alerts.getAlert("productDelete").showAndWait();
             }
         } else {
             Alerts.getAlert("nullSelect").showAndWait();

@@ -25,6 +25,8 @@ public class Alerts {
     private static final Alert nullSelect = new Alert(Alert.AlertType.ERROR);
     private static final Alert noParts = new Alert(Alert.AlertType.ERROR);
     private static final Alert lowPrice = new Alert(Alert.AlertType.ERROR);
+    private static final Alert partDelete = new Alert(Alert.AlertType.ERROR);
+    private static final Alert productDelete = new Alert(Alert.AlertType.ERROR);
    
     public static Alert getAlert(String alertType) {
         switch(alertType) {
@@ -88,6 +90,16 @@ public class Alerts {
                 lowPrice.setHeaderText("Please adjust price of product.");
                 lowPrice.setContentText("Products cannot cost less than the price of the associated parts.");
                 return lowPrice;
+            case "partDelete":
+                partDelete.setTitle("Cannot delete!");
+                partDelete.setHeaderText("Part is associated with one or more product.");
+                partDelete.setContentText("Parts cannot be deleted if they are associated with a product.");
+                return partDelete;
+            case "productDelete":
+                productDelete.setTitle("Cannot delete!");
+                productDelete.setHeaderText("Product has parts associated with it.");
+                productDelete.setContentText("Products cannot be deleted if they have associated parts.");
+                return productDelete;
             default:
                 return null;
         }

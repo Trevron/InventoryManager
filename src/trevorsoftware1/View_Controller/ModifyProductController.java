@@ -193,7 +193,7 @@ public class ModifyProductController implements Initializable {
         } else if (inStock > max) {
             System.out.println("Inv cannot be greater than max");
             Alerts.getAlert("invOverMax").showAndWait();
-        } else if (this.state.getSelectedProduct().getAssociatedParts().isEmpty()) {
+        } else if (associatedParts.isEmpty()) {
             System.out.println("Associated part list is empty.");
             Alerts.getAlert("noParts").showAndWait();
         } else if (numFormat == true) {
