@@ -200,15 +200,19 @@ public class AddProductController implements Initializable {
         }
         
         if (isValid) {
-            // Create new product and add to inventory
-            Product product = new Product(productID, name, price, inStock, min, max, associatedParts);
-            this.state.getInventory().addProduct(product);
-            // switch back to main screen
-            stage=(Stage) addProductCancelButton.getScene().getWindow();
-            root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            // exception controls - save confirmation
+            Alerts.getAlert("save").showAndWait();
+            if (Alerts.getAlert("save").getResult() == ButtonType.OK) {
+                // Create new product and add to inventory
+                Product product = new Product(productID, name, price, inStock, min, max, associatedParts);
+                this.state.getInventory().addProduct(product);
+                // switch back to main screen
+                stage=(Stage) addProductCancelButton.getScene().getWindow();
+                root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            }
         }
     }
 

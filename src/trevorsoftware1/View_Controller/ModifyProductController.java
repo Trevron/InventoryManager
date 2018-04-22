@@ -201,23 +201,27 @@ public class ModifyProductController implements Initializable {
         }
         
         if (isValid) {
-            // if exception controls are passed, set the modifications to selected product
-            this.state.getSelectedProduct().setName(name);
-            this.state.getSelectedProduct().setPrice(price);
-            this.state.getSelectedProduct().setInStock(inStock);
-            this.state.getSelectedProduct().setMin(min);
-            this.state.getSelectedProduct().setMax(max);
-            this.state.getSelectedProduct().setAssociatedParts(associatedParts);
-            
-            // return to main screen 
-            //get reference to the button's stage
-            stage=(Stage) modProductCancelButton.getScene().getWindow();
-            //load up other FXML document
-            root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));      
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        }       
+            // exception controls - save confirmation
+            Alerts.getAlert("save").showAndWait();
+            if (Alerts.getAlert("save").getResult() == ButtonType.OK) {
+                // if exception controls are passed, set the modifications to selected product
+                this.state.getSelectedProduct().setName(name);
+                this.state.getSelectedProduct().setPrice(price);
+                this.state.getSelectedProduct().setInStock(inStock);
+                this.state.getSelectedProduct().setMin(min);
+                this.state.getSelectedProduct().setMax(max);
+                this.state.getSelectedProduct().setAssociatedParts(associatedParts);
+
+                // return to main screen 
+                //get reference to the button's stage
+                stage=(Stage) modProductCancelButton.getScene().getWindow();
+                //load up other FXML document
+                root = FXMLLoader.load(getClass().getResource("FXMLMainScreen.fxml"));      
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            }     
+        }
     }
 
     @FXML
