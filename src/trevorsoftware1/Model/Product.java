@@ -116,6 +116,11 @@ public class Product {
         return associatedParts;
     }
     
+    public void setAssociatedParts(ArrayList associatedParts) {
+        this.associatedParts.clear();
+        this.associatedParts.addAll(associatedParts);
+    }
+    
     public void setProductID(int x) {
         productID.set(x);
     }
