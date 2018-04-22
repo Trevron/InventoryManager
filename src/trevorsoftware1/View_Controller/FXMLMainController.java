@@ -122,7 +122,7 @@ public class FXMLMainController implements Initializable {
                 for (int x = 0; x < ((Product) this.state.getInventory().getProducts().get(i)).getAssociatedParts().size(); x++) {
                     Product product = (Product) this.state.getInventory().getProducts().get(i);
                     Part part = (Part) product.getAssociatedParts().get(x);
-                    if (part == this.state.getSelectedPart()) {
+                    if (part.getPartID() == this.state.getSelectedPart().getPartID()) {
                         canDelete = false;
                         break;
                     } 
